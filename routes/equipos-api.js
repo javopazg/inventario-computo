@@ -62,7 +62,11 @@ router.put('/:id', async (req, res) => {
             );
         }
         
-        const equipo = await Equipo.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const equipo = await Equipo.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
         res.json(equipo);
     } catch (error) {
         res.status(400).json({ message: error.message });
