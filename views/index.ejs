@@ -492,6 +492,120 @@
         </div>
     </div>
 
+    <!-- Modal de edición de equipo -->
+    <div class="modal fade" id="editarEquipoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit"></i> Editar Equipo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="editarEquipoForm" novalidate>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editNumeroActivo">Número de Activo *</label>
+                                <input id="editNumeroActivo" name="numeroActivo" type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editTipoEquipo">Tipo de Equipo *</label>
+                                <select id="editTipoEquipo" name="tipoEquipo" class="form-select" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Laptop">Laptop</option>
+                                    <option value="PC">PC</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editEstado">Estado</label>
+                                <select id="editEstado" name="estado" class="form-select">
+                                    <option value="Nuevo">Nuevo</option>
+                                    <option value="Usado">Usado</option>
+                                    <option value="En reparación">En reparación</option>
+                                    <option value="Dado de baja">Dado de baja</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editMarca">Marca *</label>
+                                <input id="editMarca" name="marca" type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editModelo">Modelo *</label>
+                                <input id="editModelo" name="modelo" type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editNumeroSerie">Número de Serie *</label>
+                                <input id="editNumeroSerie" name="numeroSerie" type="text" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editCpu">CPU *</label>
+                                <input id="editCpu" name="cpu" type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editRam">RAM *</label>
+                                <input id="editRam" name="ram" type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editDisco">Disco Duro *</label>
+                                <input id="editDisco" name="disco" type="text" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editAnioCompra">Año de Compra *</label>
+                                <input id="editAnioCompra" name="anioCompra" type="number" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editUbicacion">Ubicación *</label>
+                                <input id="editUbicacion" name="ubicacion" type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editUsuarioAsignado">Usuario Asignado *</label>
+                                <input id="editUsuarioAsignado" name="usuarioAsignado" type="text" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editTipoEscritorioRemoto">Tipo Escritorio Remoto</label>
+                                <input id="editTipoEscritorioRemoto" name="tipoEscritorioRemoto" type="text" class="form-control">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editClaveAdministrador">Clave Administrador</label>
+                                <input id="editClaveAdministrador" name="claveAdministrador" type="password" class="form-control">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editClaveRemota">Clave Remota</label>
+                                <input id="editClaveRemota" name="claveRemota" type="password" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="editClaveBIOS">Clave BIOS</label>
+                                <input id="editClaveBIOS" name="claveBIOS" type="password" class="form-control">
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label" for="editComentario">Comentario</label>
+                                <textarea id="editComentario" name="comentario" class="form-control" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -811,7 +925,20 @@
         }
 
         function editarEquipo(id) {
-            window.location.href = `/equipos/editar/${id}`;
+            const modalEl = document.getElementById('editarEquipoModal');
+            if (!modalEl) {
+                alert('No se pudo abrir el formulario de edición.');
+                return;
+            }
+            modalEl.dataset.equipoId = id;
+            const form = document.getElementById('editarEquipoForm');
+            if (form) {
+                form.reset();
+                form.classList.remove('was-validated');
+            }
+            cargarDatosEnFormulario(id, 'equipo');
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
         }
 
         function eliminarEquipo(id) {
@@ -1113,6 +1240,54 @@
 
         // Iniciar carga
         document.addEventListener('DOMContentLoaded', function() {
+            const editarForm = document.getElementById('editarEquipoForm');
+            if (editarForm) {
+                editarForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (!editarForm.checkValidity()) {
+                        editarForm.classList.add('was-validated');
+                        return;
+                    }
+
+                    const modalEl = document.getElementById('editarEquipoModal');
+                    const equipoId = modalEl ? modalEl.dataset.equipoId : null;
+                    if (!equipoId) {
+                        alert('No se encontró el ID del equipo para editar.');
+                        return;
+                    }
+
+                    const formData = new FormData(editarForm);
+                    const payload = {};
+                    for (const [key, value] of formData.entries()) {
+                        if (value !== null && value !== undefined && String(value).trim() !== '') {
+                            payload[key] = key === 'anioCompra' ? parseInt(value, 10) : String(value).trim();
+                        }
+                    }
+
+                    try {
+                        const response = await fetch(`/api/equipos/${equipoId}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.message || 'Error al actualizar el equipo');
+                        }
+
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+                        await cargarEquipos();
+                        alert('Equipo actualizado correctamente');
+                    } catch (error) {
+                        console.error('Error al actualizar:', error);
+                        alert(`Error al actualizar el equipo: ${error.message}`);
+                    }
+                });
+            }
             cargarEquipos();
         });
     </script>
