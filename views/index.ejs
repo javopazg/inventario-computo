@@ -965,7 +965,11 @@
                 }[equipo.estado] || 'bg-secondary';
                 
                 row.innerHTML = `
-                    <td><strong class="text-primary">${equipo.numeroActivo}</strong></td>
+                    <td>
+                        <button type="button" class="btn btn-link p-0 text-primary fw-bold" onclick="verHistorialCompleto('${equipo._id}')" title="Ver historial completo">
+                            ${equipo.numeroActivo}
+                        </button>
+                    </td>
                     <td><span class="badge bg-light text-dark">${equipo.tipoEquipo}</span></td>
                     <td>${equipo.marca}</td>
                     <td>${equipo.modelo}</td>
@@ -982,9 +986,6 @@
                             </button>
                             <button class="btn btn-outline-warning" onclick="editarEquipo('${equipo._id}')" title="Editar">
                                 <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-outline-info" onclick="verHistorialCompleto('${equipo._id}')" title="Ver historial completo">
-                                <i class="fas fa-history"></i>
                             </button>
                             <button class="btn btn-outline-danger" onclick="eliminarEquipo('${equipo._id}')" title="Eliminar">
                                 <i class="fas fa-trash"></i>
