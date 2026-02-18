@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Inventario de Cómputo</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="/equipos">Equipos</a>
+                <a class="nav-link" href="/piezas">Piezas</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-center"><%= equipo ? 'Editar Equipo: ' + equipo.numeroActivo : 'Agregar Nuevo Equipo' %></h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="equipoForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="numeroActivo" class="form-label">Número de Activo *</label>
+                                    <input type="text" class="form-control" id="numeroActivo" name="numeroActivo" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="tipoEquipo" class="form-label">Tipo de Equipo *</label>
+                                    <select class="form-control" id="tipoEquipo" name="tipoEquipo" required>
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Laptop">Laptop</option>
+                                        <option value="PC">PC</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="marca" class="form-label">Marca *</label>
+                                    <input type="text" class="form-control" id="marca" name="marca" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="modelo" class="form-label">Modelo *</label>
+                                    <input type="text" class="form-control" id="modelo" name="modelo" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cpu" class="form-label">CPU *</label>
+                                    <input type="text" class="form-control" id="cpu" name="cpu" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ram" class="form-label">RAM *</label>
+                                    <input type="text" class="form-control" id="ram" name="ram" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="disco" class="form-label">Disco Duro *</label>
+                                    <input type="text" class="form-control" id="disco" name="disco" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="numeroSerie" class="form-label">Número de Serie *</label>
+                                    <input type="text" class="form-control" id="numeroSerie" name="numeroSerie" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="anioCompra" class="form-label">Año de Compra *</label>
+                                    <input type="number" class="form-control" id="anioCompra" name="anioCompra" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ubicacion" class="form-label">Ubicación *</label>
+                                    <input type="text" class="form-control" id="ubicacion" name="ubicacion" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="usuarioAsignado" class="form-label">Usuario Asignado *</label>
+                                    <input type="text" class="form-control" id="usuarioAsignado" name="usuarioAsignado" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="claveAdministrador" class="form-label">Clave de Administrador</label>
+                                    <input type="password" class="form-control" id="claveAdministrador" name="claveAdministrador">
+                                </div>
+                            </div>
+
+
+
+                                        
+                                        <!-- Campo dinámico -->
+                                        <div id="contenedorCampoRemoto" class="mt-3" style="display: none;">
+                                            <label for="detalleEscritorioRemoto" class="form-label">Detalles adicionales:</label>
+                                            <select id="detalleEscritorioRemoto" class="form-select form-select-sm">
+                                                <option value="">Seleccione una opción...</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="claveAdministradorMain" class="form-label">Clave Administrador</label>
+                                    <input type="password" class="form-control" id="claveAdministrador" name="claveAdministrador">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="claveRemotaMain" class="form-label">Clave Remota</label>
+                                    <input type="password" class="form-control" id="claveRemota" name="claveRemota">
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    <label for="claveBIOSMain" class="form-label">Clave BIOS</label>
+                                    <input type="password" class="form-control" id="claveBIOS" name="claveBIOS">
+                                </div>
+                            </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="estado" class="form-label">Estado</label>
+                                    <select class="form-control" id="estado" name="estado">
+                                        <option value="Nuevo">Nuevo</option>
+                                        <option value="Usado" selected>Usado</option>
+                                        <option value="En reparación">En reparación</option>
+                                        <option value="Dado de baja">Dado de baja</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="comentario" class="form-label">Comentario</label>
+                                <textarea class="form-control" id="comentario" name="comentario" rows="3"></textarea>
+                            </div>
+
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a href="/" class="btn btn-secondary me-md-2">Cancelar</a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <%= equipo ? 'Actualizar Equipo' : 'Guardar Equipo' %>
+                                        </button>
+                                    </div>
+                                    
+                                    <% if (equipo) { %>
+                                    <div class="mt-3">
+                                        <div class="alert alert-info">
+                                            <strong>ID del equipo:</strong> <%= equipo._id %><br>
+                                            <strong>Creado el:</strong> <%= new Date(equipo.createdAt).toLocaleDateString() %><br>
+                                            <strong>Última actualización:</strong> <%= new Date(equipo.updatedAt).toLocaleDateString() %>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Función principal para procesar el formulario (usada tanto para nuevo como para edición)
+        async function procesarFormulario(e, isEditing, equipoId) {
+            console.log(`📥 Procesando formulario (Modo: ${isEditing ? 'EDICIÓN' : 'NUEVO'})`);
+            console.log(`🎯 isEditing: ${isEditing}, equipoId: ${equipoId}`);
+            
+            // Prevenir el envío normal del formulario
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Validar campos obligatorios
+            const camposObligatorios = ['numeroActivo', 'tipoEquipo', 'marca', 'modelo', 'cpu', 'ram', 'disco', 'numeroSerie', 'anioCompra', 'ubicacion', 'usuarioAsignado'];
+            
+            console.log('🔍 Validando campos obligatorios...');
+            for (const campo of camposObligatorios) {
+                const input = document.querySelector(`[name="${campo}"]`);
+                console.log(`  Verificando ${campo}:`, input ? `"${input.value}"` : 'NO ENCONTRADO');
+                
+                if (!input || !input.value || !input.value.trim()) {
+                    console.log(`❌ Campo obligatorio vacío: ${campo}`);
+                    alert(`El campo "${campo}" es obligatorio`);
+                    if (input) {
+                        input.focus();
+                        input.style.borderColor = '#ef4444';
+                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    return false;
+                }
+            }
+            
+            // Validar año de compra
+            const anioCompraInput = document.querySelector('[name="anioCompra"]');
+            const anioCompra = parseInt(anioCompraInput.value);
+            const anioActual = new Date().getFullYear();
+            console.log(`📅 Año de compra: ${anioCompra}, Año actual: ${anioActual}`);
+            
+            if (isNaN(anioCompra) || anioCompra < 1900 || anioCompra > anioActual + 1) {
+                console.log(`❌ Año de compra inválido: ${anioCompra}`);
+                alert(`El año de compra debe estar entre 1900 y ${anioActual + 1}`);
+                if (anioCompraInput) {
+                    anioCompraInput.focus();
+                    anioCompraInput.style.borderColor = '#ef4444';
+                    anioCompraInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return false;
+            }
+             
+            // Recopilar datos del formulario
+            const formData = new FormData(e.target);
+            const equipoData = {};
+            
+            console.log('📊 Recopilando datos del formulario...');
+            for (const [key, value] of formData.entries()) {
+                if (value && value.trim() !== '') {
+                    if (key === 'anioCompra') {
+                        equipoData[key] = parseInt(value);
+                    } else {
+                        equipoData[key] = value.trim();
+                    }
+                }
+            }
+            
+            console.log('📊 Datos a enviar:', equipoData);
+            
+            try {
+                const url = isEditing ? `/api/equipos/${equipoId}` : '/api/equipos';
+                const method = isEditing ? 'PUT' : 'POST';
+                
+                console.log(`🌐 Enviando petición a: ${url} (Método: ${method})`);
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(equipoData)
+                });
+                
+                console.log(`📡 Estado HTTP: ${response.status} ${response.statusText}`);
+                const result = await response.json();
+                console.log('📋 Respuesta del servidor:', result);
+                
+                if (response.ok) {
+                    const mensaje = isEditing ? '✅ Equipo actualizado correctamente' : '✅ Equipo agregado correctamente';
+                    console.log('✅ Operación exitosa, mostrando alerta y redirigiendo...');
+                    alert(mensaje);
+                    
+                    console.log('🔄 Redirigiendo a página principal...');
+                    window.location.href = '/';
+                } else {
+                    console.error('❌ Error del servidor:', result);
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('❌ Error en el procesamiento:', error);
+                alert('Ocurrió un error al guardar el equipo: ' + error.message);
+            }
+        }
+
+        // Función para cargar datos del equipo en modo edición
+        async function cargarDatosEquipo(id) {
+            console.log('🔄 Iniciando carga de datos para equipo ID:', id);
+            
+            try {
+                const response = await fetch(`/api/equipos/${id}`);
+                console.log('🌐 Respuesta HTTP:', response.status, response.statusText);
+                
+                const equipo = await response.json();
+                console.log('📋 Datos recibidos del servidor:', equipo);
+                
+                if (response.ok) {
+                    // Lista directa de campos a llenar
+                    const campos = [
+                        'numeroActivo', 'tipoEquipo', 'marca', 'modelo', 
+                        'cpu', 'ram', 'disco', 'numeroSerie', 
+                        'anioCompra', 'ubicacion', 'usuarioAsignado',
+                        'claveAdministrador', 'claveRemota', 'claveBIOS',
+                        'comentario'
+                    ];
+                    
+                    let camposLlenados = 0;
+                    console.log('📝 Comenzando a llenar formulario...');
+                    
+                    campos.forEach(nombreCampo => {
+                        const input = document.querySelector(`[name="${nombreCampo}"]`);
+                        
+                        if (input) {
+                            let valor = equipo[nombreCampo];
+                            
+                            // Manejo especial para año de compra
+                            if (nombreCampo === 'anioCompra' && valor) {
+                                valor = typeof valor === 'number' ? valor : 
+                                       (typeof valor === 'string' ? parseInt(valor) : new Date().getFullYear());
+                            } else if (!valor) {
+                                valor = '';
+                            }
+                            
+                            // Asignar valor directamente
+                            input.value = valor;
+                            console.log(`✅ [${nombreCampo}] = "${valor}"`);
+                            camposLlenados++;
+                            
+                            // Forzar evento change para notificar a otros scripts
+                            input.dispatchEvent(new Event('change', { bubbles: true }));
+                        } else {
+                            console.warn(`⚠️ Campo no encontrado: [name="${nombreCampo}"]`);
+                        }
+                    });
+                    
+                    console.log(`📊 Resultado: ${camposLlenados}/${campos.length} campos llenados`);
+                    
+                    // Manejar select de tipoEquipo específicamente
+                    const tipoEquipoSelect = document.querySelector('[name="tipoEquipo"]');
+                    if (tipoEquipoSelect && equipo.tipoEquipo) {
+                        tipoEquipoSelect.value = equipo.tipoEquipo;
+                        console.log(`🎯 Select tipoEquipo fijado en: "${equipo.tipoEquipo}"`);
+                    }
+                    
+                    // Verificación inmediata
+                    console.log('🔍 Verificación inmediata de carga:');
+                    campos.forEach(nombreCampo => {
+                        const input = document.querySelector(`[name="${nombreCampo}"]`);
+                        if (input) {
+                            const tieneValor = input.value.trim() !== '';
+                            console.log(`  ${nombreCampo}: "${input.value}" ${tieneValor ? '✅' : '❌ vacío'}`);
+                        }
+                    });
+                    
+                    return camposLlenados > 0;
+                } else {
+                    console.error('❌ Error del servidor:', response.status, equipo);
+                    alert('Error al cargar los datos del equipo: ' + (equipo.message || 'Error desconocido'));
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Error en la carga de datos:', error);
+                alert('Ocurrió un error al cargar los datos del equipo: ' + error.message);
+                return false;
+            }
+        }
+
+        // Iniciar carga y configurar formulario
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOM Cargado - Iniciando configuración del formulario');
+            
+            const isEditing = window.location.pathname.includes('/editar/');
+            const pathParts = window.location.pathname.split('/');
+            const equipoId = isEditing ? pathParts[pathParts.length - 1] : null;
+            
+            console.log('🔍 Sistema iniciando en modo:', isEditing ? 'EDICIÓN' : 'NUEVO EQUIPO');
+            console.log('📍 Path actual:', window.location.pathname);
+            console.log('🆔 ID del equipo:', equipoId);
+            
+            const equipoForm = document.getElementById('equipoForm');
+            if (!equipoForm) {
+                console.error('❌ Formulario no encontrado en el DOM');
+                return;
+            }
+            console.log('✅ Formulario encontrado:', equipoForm);
+            
+            // Verificar existencia de campos clave
+            const camposClave = ['numeroActivo', 'tipoEquipo', 'marca', 'modelo', 'cpu', 'ram', 'disco'];
+            console.log('🔍 Verificando campos del formulario:');
+            camposClave.forEach(campo => {
+                const input = document.querySelector(`[name="${campo}"]`);
+                console.log(`  ${campo}:`, input ? '✅ encontrado' : '❌ NO ENCONTRADO');
+            });
+            
+            // Si es edición, cargar datos primero
+            if (isEditing && equipoId && equipoId !== 'editar') {
+                console.log('🔄 Modo edición detectado, cargando datos...');
+                
+                // Pequeña demora para asegurar que el DOM esté completamente listo
+                setTimeout(() => {
+                    cargarDatosEquipo(equipoId).then((cargado) => {
+                        if (cargado) {
+                            console.log('✅ Datos cargados exitosamente');
+                            
+                            // Verificación final
+                            console.log('🔍 Verificación final después de la carga:');
+                            camposClave.forEach(campo => {
+                                const input = document.querySelector(`[name="${campo}"]`);
+                                if (input) {
+                                    console.log(`  ${campo}: "${input.value}"`);
+                                }
+                            });
+                        } else {
+                            console.log('❌ Error al cargar datos, formulario en modo nuevo');
+                        }
+                    }).catch((error) => {
+                        console.error('❌ Error cargando datos:', error);
+                        alert('Error al cargar los datos del equipo para edición');
+                    });
+                }, 500);
+            } else {
+                console.log('📝 Modo nuevo equipo - formulario listo para capturar datos');
+            }
+            
+            // Agregar listener de submit
+            equipoForm.addEventListener('submit', function(e) {
+                console.log('📤 Formulario submit detectado');
+                procesarFormulario(e, isEditing, equipoId);
+            });
+        });
+    </script>
+</body>
+</html>

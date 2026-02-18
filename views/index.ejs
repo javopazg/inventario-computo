@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Inventario | Avatar Global</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --avatar-primary: #1e40af;
+            --avatar-primary-dark: #1e3a8a;
+            --avatar-primary-light: #3b82f6;
+            --avatar-secondary: #06b6d4;
+            --avatar-accent: #f59e0b;
+            --avatar-success: #10b981;
+            --avatar-danger: #ef4444;
+            --avatar-warning: #f59e0b;
+            --avatar-gray-50: #f9fafb;
+            --avatar-gray-100: #f3f4f6;
+            --avatar-gray-200: #e5e7eb;
+            --avatar-gray-300: #d1d5db;
+            --avatar-gray-600: #4b5563;
+            --avatar-gray-700: #374151;
+            --avatar-gray-800: #1f2937;
+            --avatar-gray-900: #111827;
+            --gradient-primary: linear-gradient(135deg, var(--avatar-primary) 0%, var(--avatar-secondary) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--avatar-accent) 0%, #f97316 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            color: var(--avatar-gray-800);
+        }
+
+        .navbar-brand {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .navbar-brand::before {
+            content: '🔷';
+            font-size: 1.8rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar {
+            background: var(--gradient-primary) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem !important;
+            border-radius: 0.5rem;
+            margin: 0 0.25rem;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            background: white;
+        }
+
+        .card-header {
+            background: var(--gradient-primary);
+            border: none;
+            padding: 1.5rem;
+            border-radius: 1rem 1rem 0 0 !important;
+        }
+
+        .card-header h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            font-size: 1.75rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            padding: 0.625rem 1.25rem;
+            border: none;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .btn-success {
+            background: var(--gradient-accent);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.3);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--avatar-primary);
+            color: var(--avatar-primary);
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--avatar-primary);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-warning {
+            border: 2px solid var(--avatar-warning);
+            color: var(--avatar-warning);
+            background: transparent;
+        }
+
+        .btn-outline-warning:hover {
+            background: var(--avatar-warning);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-info {
+            border: 2px solid var(--avatar-secondary);
+            color: var(--avatar-secondary);
+            background: transparent;
+        }
+
+        .btn-outline-info:hover {
+            background: var(--avatar-secondary);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-danger {
+            border: 2px solid var(--avatar-danger);
+            color: var(--avatar-danger);
+            background: transparent;
+        }
+
+        .btn-outline-danger:hover {
+            background: var(--avatar-danger);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .table {
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .table thead th {
+            background: var(--avatar-gray-50);
+            border-bottom: 2px solid var(--avatar-gray-200);
+            font-weight: 600;
+            color: var(--avatar-gray-700);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            padding: 1rem;
+            border-bottom: 1px solid var(--avatar-gray-100);
+        }
+
+        .table tbody tr:hover {
+            background: var(--avatar-gray-50);
+        }
+
+        .badge {
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 0.5rem 0.875rem;
+            border-radius: 0.5rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 500;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            color: var(--avatar-primary);
+            border-left: 4px solid var(--avatar-primary);
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            color: var(--avatar-warning);
+            border-left: 4px solid var(--avatar-warning);
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--avatar-gray-200);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--avatar-primary);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .modal-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            color: white;
+        }
+
+        .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .avatar-card-stats {
+            border-radius: 1rem;
+            border: none;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-card-stats:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .avatar-card-stats .card-body {
+            padding: 1.5rem;
+        }
+
+        .avatar-card-stats h5 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .avatar-card-stats small {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .border-top {
+            border-top: 2px solid var(--avatar-gray-100) !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                Avatar Global
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/equipos">
+                    <i class="fas fa-desktop me-2"></i>Equipos
+                </a>
+                <a class="nav-link" href="/piezas">
+                    <i class="fas fa-cogs me-2"></i>Piezas
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="text-center fade-in">
+                    <h1 class="display-4 fw-bold mb-3" style="background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                        Sistema de Inventario
+                    </h1>
+                    <p class="lead text-muted">Gestión integral de equipos de cómputo</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card fade-in">
+                    <div class="card-header">
+                        <h3 class="text-center mb-0">
+                            <i class="fas fa-desktop me-2"></i>Listado de Equipos
+                        </h3>
+                    </div>
+                    
+                    <!-- Barra de acciones -->
+                    <div class="card-body border-top">
+                        <div class="row align-items-center mb-3">
+                            <div class="col-md-4">
+                                <!-- Filtro por estado -->
+                                <div class="form-group mb-0">
+                                    <label class="form-label">Filtrar por:</label>
+                                    <select id="filtroEstado" class="form-select form-select-sm" onchange="aplicarFiltros()">
+                                        <option value="">Todos los estados</option>
+                                        <option value="Usado">Usado</option>
+                                        <option value="En reparación">En reparación</option>
+                                        <option value="Dado de baja">Dado de baja</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- Búsqueda por usuario -->
+                                <div class="form-group mb-0">
+                                    <label class="form-label">Buscar usuario:</label>
+                                    <input type="text" 
+                                           id="busquedaUsuario" 
+                                           class="form-control form-control-sm" 
+                                           placeholder="Escriba nombre de usuario..."
+                                           oninput="aplicarFiltros()">
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <button class="btn btn-success" onclick="window.location.href='/equipos/nuevo'">
+                                    <i class="fas fa-plus"></i> Agregar Equipo
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Resultados de búsqueda en tiempo real -->
+                        <div id="contenedorResultadosBusqueda" style="display: none;">
+                            <div class="alert alert-info alert-sm">
+                                <small>
+                                    <i class="fas fa-info-circle"></i> 
+                                    Mostrando <span id="contadorCoincidencias">0</span> equipos con usuario que contiene: 
+                                    <strong>"<span id="textoBusqueda"></span>"</strong>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- Alerta de carga -->
+                        <div id="loadingAlert" class="alert alert-info text-center">
+                            Cargando equipos...
+                        </div>
+                        
+                        <!-- Alerta de vacío -->
+                        <div id="emptyAlert" class="alert alert-warning text-center" style="display: none;">
+                            <h5>No hay equipos registrados</h5>
+                            <p>Comienza agregando tu primer equipo al inventario.</p>
+                            <a href="/equipos/nuevo" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Agregar Primer Equipo
+                            </a>
+                        </div>
+                        
+                        <!-- Tabla de equipos -->
+                        <div id="equiposContainer" style="display: none;">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>N° Activo ↑</th>
+                                            <th>Tipo ↑</th>
+                                            <th>Marca</th>
+                                            <th>Modelo</th>
+                                            <th>CPU</th>
+                                            <th>RAM</th>
+                                            <th>Disco</th>
+                                            <th>Usuario</th>
+                                            <th>Ubicación</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="equiposTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Resumen -->
+                            <div class="row mt-5">
+                                <div class="col-md-3 mb-4">
+                                    <div class="avatar-card-stats bg-primary text-white">
+                                        <div class="card-body text-center">
+                                            <div class="mb-3">
+                                                <i class="fas fa-desktop fa-2x"></i>
+                                            </div>
+                                            <h5 id="totalEquipos">0</h5>
+                                            <small>TOTAL EQUIPOS</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-4">
+                                    <div class="avatar-card-stats bg-success text-white">
+                                        <div class="card-body text-center">
+                                            <div class="mb-3">
+                                                <i class="fas fa-laptop fa-2x"></i>
+                                            </div>
+                                            <h5 id="laptopsCount">0</h5>
+                                            <small>LAPTOPS</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-4">
+                                    <div class="avatar-card-stats bg-info text-white">
+                                        <div class="card-body text-center">
+                                            <div class="mb-3">
+                                                <i class="fas fa-desktop fa-2x"></i>
+                                            </div>
+                                            <h5 id="pcsCount">0</h5>
+                                            <small>PCS</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-4">
+                                    <div class="avatar-card-stats bg-warning text-white">
+                                        <div class="card-body text-center">
+                                            <div class="mb-3">
+                                                <i class="fas fa-users fa-2x"></i>
+                                            </div>
+                                            <h5 id="usadosCount">0</h5>
+                                            <small>EN USO</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Función para confirmar eliminación
+        function confirmDelete(id, tipo) {
+            if (confirm(`¿Estás seguro de que deseas eliminar este ${tipo}?`)) {
+                fetch(`/api/${tipo}s/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+
+        // Función para cargar datos en formulario (versión corregida)
+        function cargarDatosEnFormulario(id, tipo) {
+            console.log('🔄 Cargando datos para', tipo, 'con ID:', id);
+            
+            fetch(`/api/${tipo}s/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('✅ Datos recibidos:', data);
+                    
+                    // ID del modal
+                    const modalId = tipo === 'equipo' ? 'editarEquipoModal' : 'editarPiezaModal';
+                    const modal = document.getElementById(modalId);
+                    
+                    if (!modal) {
+                        console.error('❌ Modal no encontrado:', modalId);
+                        return;
+                    }
+                    
+                    console.log('📝 Llenando formulario en modal:', modalId);
+                    
+                    // Mapeo de campos especiales para equipos
+                    const campoMapping = {
+                        'numeroActivo': 'numeroActivo',
+                        'tipoEquipo': 'tipoEquipo',
+                        'marca': 'marca',
+                        'modelo': 'modelo',
+                        'cpu': 'cpu',
+                        'ram': 'ram',
+                        'disco': 'disco',
+                        'numeroSerie': 'numeroSerie',
+                        'anioCompra': 'anioCompra',
+                        'ubicacion': 'ubicacion',
+                        'usuarioAsignado': 'usuarioAsignado',
+                        'claveAdministrador': 'claveAdministrador',
+                        'claveRemota': 'claveRemota',
+                        'claveBIOS': 'claveBIOS',
+                        'tipoEscritorioRemoto': 'tipoEscritorioRemoto',
+                        'comentario': 'comentario'
+                    };
+                    
+                    let camposLlenados = 0;
+                    
+                    // Llenar campos usando el mapeo
+                    Object.keys(campoMapping).forEach(dataKey => {
+                        const formFieldName = campoMapping[dataKey];
+                        const input = modal.querySelector(`[name="${formFieldName}"]`);
+                        
+                        if (input) {
+                            input.value = data[dataKey] || '';
+                            console.log(`✅ Campo "${formFieldName}" llenado con: "${data[dataKey] || ''}"`);
+                            camposLlenados++;
+                        } else {
+                            console.warn(`⚠️ Campo no encontrado en formulario: "${formFieldName}"`);
+                        }
+                    });
+                    
+                    console.log(`📊 Resumen: ${camposLlenados} campos llenados de ${Object.keys(campoMapping).length} totales`);
+                    
+                    // Verificación final
+                    setTimeout(() => {
+                        console.log('🔍 Verificación final de valores:');
+                        Object.keys(campoMapping).forEach(dataKey => {
+                            const formFieldName = campoMapping[dataKey];
+                            const input = modal.querySelector(`[name="${formFieldName}"]`);
+                            if (input) {
+                                console.log(`  ${formFieldName}: "${input.value}"`);
+                            }
+                        });
+                    }, 100);
+                    
+                })
+                .catch(error => {
+                    console.error('❌ Error al cargar datos:', error);
+                    alert('Error al cargar los datos del formulario');
+                });
+        }
+
+        // Función para confirmar eliminación
+        function confirmarEliminacion(id, tipo) {
+            confirmDelete(id, tipo);
+        }
+    </script>
+    <script>
+        // Variable global para almacenar todos los equipos
+        let todosLosEquipos = [];
+
+        // Cargar listado de equipos
+        async function cargarEquipos() {
+            console.log('Cargando equipos...');
+            try {
+                const response = await fetch('/api/equipos');
+                const equipos = await response.json();
+                console.log('Equipos cargados:', equipos.length);
+                
+                todosLosEquipos = equipos;
+                document.getElementById('loadingAlert').style.display = 'none';
+                
+                if (equipos.length === 0) {
+                    document.getElementById('emptyAlert').style.display = 'block';
+                } else {
+                    document.getElementById('equiposContainer').style.display = 'block';
+                    mostrarEquipos(equipos);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loadingAlert').innerHTML = 'Error al cargar equipos';
+            }
+        }
+
+        // Cargar listado de equipos
+        async function cargarEquipos() {
+            console.log('Cargando equipos...');
+            try {
+                const response = await fetch('/api/equipos');
+                const equipos = await response.json();
+                console.log('Equipos cargados:', equipos.length);
+                
+                todosLosEquipos = equipos;
+                document.getElementById('loadingAlert').style.display = 'none';
+                
+                if (equipos.length === 0) {
+                    document.getElementById('emptyAlert').style.display = 'block';
+                } else {
+                    document.getElementById('equiposContainer').style.display = 'block';
+                    mostrarEquipos(equipos);
+                    actualizarResumen(equipos);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loadingAlert').innerHTML = 'Error al cargar equipos';
+            }
+        }
+
+        // Aplicar filtros combinados
+        function aplicarFiltros() {
+            const estadoSeleccionado = document.getElementById('filtroEstado').value;
+            const textoBusqueda = document.getElementById('busquedaUsuario').value.trim().toLowerCase();
+            
+            let equiposFiltrados = [...todosLosEquipos];
+            
+            // Aplicar filtro por estado
+            if (estadoSeleccionado) {
+                equiposFiltrados = equiposFiltrados.filter(equipo => equipo.estado === estadoSeleccionado);
+            }
+            
+            // Aplicar filtro por usuario
+            if (textoBusqueda) {
+                equiposFiltrados = equiposFiltrados.filter(equipo => 
+                    equipo.usuarioAsignado && 
+                    equipo.usuarioAsignado.toLowerCase().includes(textoBusqueda)
+                );
+            }
+            
+            // Mostrar/ocultar contenedor de resultados de búsqueda
+            const contenedorBusqueda = document.getElementById('contenedorResultadosBusqueda');
+            if (textoBusqueda) {
+                contenedorBusqueda.style.display = 'block';
+                document.getElementById('contadorCoincidencias').textContent = equiposFiltrados.length;
+                document.getElementById('textoBusqueda').textContent = textoBusqueda;
+            } else {
+                contenedorBusqueda.style.display = 'none';
+            }
+            
+            const tbody = document.getElementById('equiposTableBody');
+            
+            if (equiposFiltrados.length === 0) {
+                if (textoBusqueda) {
+                    tbody.innerHTML = `<tr><td colspan="11" class="text-center">No hay equipos con usuario que contenga "${textoBusqueda}"</td></tr>`;
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="11" class="text-center">No hay equipos con el estado seleccionado</td></tr>';
+                }
+            } else {
+                mostrarEquipos(equiposFiltrados);
+            }
+            
+            // Actualizar contador de resultados
+            actualizarContadorResultados(equiposFiltrados.length, todosLosEquipos.length);
+        }
+
+        // Actualizar contador de resultados
+        function actualizarContadorResultados(cantidadFiltrada, cantidadTotal) {
+            let mensaje = '';
+            if (cantidadFiltrada < cantidadTotal) {
+                mensaje = `Mostrando ${cantidadFiltrada} de ${cantidadTotal} equipos`;
+            } else {
+                mensaje = `Total: ${cantidadTotal} equipos`;
+            }
+            
+            // Actualizar o crear el contador
+            let contador = document.getElementById('contadorResultados');
+            if (!contador) {
+                const header = document.querySelector('.card-header h3');
+                const contadorDiv = document.createElement('small');
+                contadorDiv.id = 'contadorResultados';
+                contadorDiv.className = 'text-muted ms-2';
+                header.appendChild(contadorDiv);
+                contador = document.getElementById('contadorResultados');
+            }
+            
+            contador.textContent = mensaje;
+        }
+
+        // Mostrar equipos en la tabla
+        function mostrarEquipos(equipos) {
+            console.log('Mostrando equipos...');
+            const tbody = document.getElementById('equiposTableBody');
+            tbody.innerHTML = '';
+            
+            // Ordenar equipos
+            equipos.sort((a, b) => {
+                if (a.tipoEquipo !== b.tipoEquipo) {
+                    return a.tipoEquipo === 'Laptop' ? -1 : 1;
+                }
+                return a.numeroActivo.localeCompare(b.numeroActivo);
+            });
+            
+            equipos.forEach(equipo => {
+                const row = document.createElement('tr');
+                
+                const estadoClass = {
+                    'Nuevo': 'bg-success',
+                    'Usado': 'bg-primary',
+                    'En reparación': 'bg-warning',
+                    'Dado de baja': 'bg-danger'
+                }[equipo.estado] || 'bg-secondary';
+                
+                row.innerHTML = `
+                    <td><strong class="text-primary">${equipo.numeroActivo}</strong></td>
+                    <td><span class="badge bg-light text-dark">${equipo.tipoEquipo}</span></td>
+                    <td>${equipo.marca}</td>
+                    <td>${equipo.modelo}</td>
+                    <td><small>${equipo.cpu}</small></td>
+                    <td><small>${equipo.ram}</small></td>
+                    <td><small>${equipo.disco}</small></td>
+                    <td><span class="badge bg-primary">${equipo.usuarioAsignado}</span></td>
+                    <td><small>${equipo.ubicacion}</small></td>
+                    <td><span class="badge ${estadoClass}">${equipo.estado}</span></td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" onclick="verHistorial('${equipo._id}')" title="Ver historial de usuarios">
+                                <i class="fas fa-users"></i>
+                            </button>
+                            <button class="btn btn-outline-warning" onclick="editarEquipo('${equipo._id}')" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline-info" onclick="verHistorialCompleto('${equipo._id}')" title="Ver historial completo">
+                                <i class="fas fa-history"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="eliminarEquipo('${equipo._id}')" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            console.log('Equipos mostrados:', equipos.length);
+        }
+
+        // Actualizar resumen de estadísticas
+        function actualizarResumen(equipos) {
+            const total = equipos.length;
+            const laptops = equipos.filter(e => e.tipoEquipo === 'Laptop').length;
+            const pcs = equipos.filter(e => e.tipoEquipo === 'PC').length;
+            const usados = equipos.filter(e => e.estado === 'Usado' || e.estado === 'Nuevo').length;
+            
+            document.getElementById('totalEquipos').textContent = total;
+            document.getElementById('laptopsCount').textContent = laptops;
+            document.getElementById('pcsCount').textContent = pcs;
+            document.getElementById('usadosCount').textContent = usados;
+        }
+
+        // Funciones de acciones
+        function verHistorial(id) {
+            fetch(`/api/historial/equipo/${id}`)
+                .then(response => response.json())
+                .then(historial => {
+                    mostrarModalHistorialUsuarios(historial, id);
+                })
+                .catch(error => {
+                    console.error('Error al cargar historial:', error);
+                    alert('Error al cargar el historial de usuarios');
+                });
+        }
+
+        function verHistorialCompleto(id) {
+            Promise.all([
+                fetch(`/api/equipos/${id}`).then(response => response.json()),
+                fetch(`/api/historial/equipo/${id}`).then(response => response.json())
+            ])
+            .then(([equipo, historial]) => {
+                mostrarModalHistorialCompleto(equipo, historial);
+            })
+            .catch(error => {
+                console.error('Error al cargar datos:', error);
+                alert('Error al cargar el historial completo');
+            });
+        }
+
+        function editarEquipo(id) {
+            window.location.href = `/equipos/editar/${id}`;
+        }
+
+        function eliminarEquipo(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar este equipo?')) {
+                fetch(`/api/equipos/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    cargarEquipos();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al eliminar el equipo');
+                });
+            }
+        }
+
+        function mostrarModalHistorialUsuarios(historial, equipoId) {
+            const historialOrdenado = [...historial].sort((a, b) => 
+                new Date(b.fechaCambio) - new Date(a.fechaCambio)
+            );
+            
+            const usuarioActual = historialOrdenado.length > 0 ? 
+                historialOrdenado[0].valorNuevo : 'Sin asignar';
+            
+            const usuariosAnteriores = historialOrdenado.length > 1 ? 
+                historialOrdenado.slice(1) : [];
+            
+            const modalHtml = `
+                <div class="modal fade" id="historialUsuariosModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-users"></i> Historial de Usuarios Asignados
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                ${historial.length === 0 ? 
+                                    '<p class="text-center text-muted">No hay cambios de usuarios registrados para este equipo.</p>' :
+                                    `
+                                    <div class="card mb-4 border-success bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-success">
+                                                <i class="fas fa-user-check"></i> Usuario Actual
+                                            </h6>
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <span class="badge bg-success fs-6 p-2">${usuarioActual}</span>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-calendar-check"></i><br>
+                                                        ${new Date(historialOrdenado[0].fechaCambio).toLocaleDateString()}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    ${usuariosAnteriores.length > 0 ? `
+                                        <div class="card border-warning bg-light">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-warning mb-3">
+                                                    <i class="fas fa-history"></i> Usuario(s) Anteriores
+                                                </h6>
+                                                ${usuariosAnteriores.map((cambio, index) => `
+                                                    <div class="card mb-2 border-secondary">
+                                                        <div class="card-body py-2">
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <div>
+                                                                    <span class="badge bg-warning text-dark">${cambio.valorNuevo}</span>
+                                                                    ${index === usuariosAnteriores.length - 1 ? 
+                                                                        `<small class="text-muted ms-2">(Usuario original)</small>` : ''}
+                                                                </div>
+                                                                <small class="text-muted">
+                                                                    ${new Date(cambio.fechaCambio).toLocaleDateString()}
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                    `
+                                }
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const modalExistente = document.getElementById('historialUsuariosModal');
+            if (modalExistente) modalExistente.remove();
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('historialUsuariosModal'));
+            modal.show();
+        }
+
+        let mostrarClaves = false;
+        
+        function toggleMostrarClaves() {
+            mostrarClaves = !mostrarClaves;
+            // Actualizar todos los campos de contraseña
+            document.querySelectorAll('input[type="password"], input[type="text"]').forEach(input => {
+                if (input.id !== 'busquedaUsuario') {
+                    input.type = mostrarClaves ? 'text' : 'password';
+                }
+            });
+            // Actualizar iconos
+            document.querySelectorAll('[id^="iconoClaves"]').forEach(icono => {
+                icono.className = mostrarClaves ? 'fas fa-eye-slash' : 'fas fa-eye';
+            });
+        }
+
+        function mostrarModalHistorialCompleto(equipo, historial) {
+            // Resetear visibilidad de claves
+            mostrarClaves = false;
+            
+            const modalHtml = `
+                <div class="modal fade" id="historialModal" tabindex="-1">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-info-circle"></i> Información Completa del Equipo
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card mb-4 border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-desktop"></i> Datos del Equipo - ${equipo.numeroActivo}
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Datos principales -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <h6 class="text-primary mb-3"><i class="fas fa-info-circle"></i> Datos Principales</h6>
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm table-borderless">
+                                                    <tr><td><strong>Número de Activo:</strong></td><td>${equipo.numeroActivo}</td></tr>
+                                                    <tr><td><strong>Tipo:</strong></td><td>${equipo.tipoEquipo}</td></tr>
+                                                    <tr><td><strong>Marca:</strong></td><td>${equipo.marca}</td></tr>
+                                                    <tr><td><strong>Modelo:</strong></td><td>${equipo.modelo}</td></tr>
+                                                    <tr><td><strong>Número de Serie:</strong></td><td>${equipo.numeroSerie}</td></tr>
+                                                    <tr><td><strong>Año de Compra:</strong></td><td>${equipo.anioCompra}</td></tr>
+                                                    <tr><td><strong>Estado:</strong></td><td><span class="badge bg-${equipo.estado === 'Nuevo' ? 'success' : equipo.estado === 'Usado' ? 'primary' : equipo.estado === 'En reparación' ? 'warning' : 'danger'}">${equipo.estado}</span></td></tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6 class="text-primary mb-3"><i class="fas fa-desktop"></i> Especificaciones</h6>
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm table-borderless">
+                                                    <tr><td><strong>CPU:</strong></td><td>${equipo.cpu}</td></tr>
+                                                    <tr><td><strong>Memoria RAM:</strong></td><td>${equipo.ram}</td></tr>
+                                                    <tr><td><strong>Disco Duro:</strong></td><td>${equipo.disco}</td></tr>
+                                                    <tr><td><strong>Usuario Asignado:</strong></td><td><span class="badge bg-success">${equipo.usuarioAsignado}</span></td></tr>
+                                                    <tr><td><strong>Ubicación:</strong></td><td>${equipo.ubicacion}</td></tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Acceso y Seguridad -->
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <h6 class="text-warning mb-3"><i class="fas fa-key"></i> Credenciales de Acceso</h6>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="card bg-light">
+                                                            <div class="card-body">
+                                                                <small class="text-muted">Clave Administrador</small>
+                                                                <div class="input-group">
+                                                                    <input type="${mostrarClaves ? 'text' : 'password'}" class="form-control form-control-sm" value="${equipo.claveAdministrador || 'No configurada'}" readonly>
+                                                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="toggleMostrarClaves()">
+                                                                        <i class="fas fa-eye" id="iconoClaves"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="card bg-light">
+                                                            <div class="card-body">
+                                                                <small class="text-muted">Clave Remota</small>
+                                                                <div class="input-group">
+                                                                    <input type="${mostrarClaves ? 'text' : 'password'}" class="form-control form-control-sm" value="${equipo.claveRemota || 'No configurada'}" readonly>
+                                                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="toggleMostrarClaves()">
+                                                                        <i class="fas fa-eye" id="iconoClaves2"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="card bg-light">
+                                                            <div class="card-body">
+                                                                <small class="text-muted">Clave BIOS</small>
+                                                                <div class="input-group">
+                                                                    <input type="${mostrarClaves ? 'text' : 'password'}" class="form-control form-control-sm" value="${equipo.claveBIOS || 'No configurada'}" readonly>
+                                                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="toggleMostrarClaves()">
+                                                                        <i class="fas fa-eye" id="iconoClaves3"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Configuración Remota -->
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <h6 class="text-info mb-3"><i class="fas fa-network-wired"></i> Configuración Remota</h6>
+                                                <table class="table table-sm">
+                                                    <tr>
+                                                        <td width="25%"><strong>Tipo Escritorio Remoto:</strong></td>
+                                                        <td>${equipo.tipoEscritorioRemoto || 'No configurado'}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Comentarios y Fechas -->
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6 class="text-secondary mb-3"><i class="fas fa-comment"></i> Comentarios</h6>
+                                                <div class="card bg-light">
+                                                    <div class="card-body">
+                                                        ${equipo.comentario || '<span class="text-muted">Sin comentarios</span>'}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6 class="text-secondary mb-3"><i class="fas fa-calendar"></i> Fechas</h6>
+                                                <table class="table table-sm table-borderless">
+                                                    <tr><td><strong>Fecha de Creación:</strong></td><td>${new Date(equipo.createdAt).toLocaleDateString()}</td></tr>
+                                                    <tr><td><strong>Última Actualización:</strong></td><td>${new Date(equipo.updatedAt).toLocaleDateString()}</td></tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card border-secondary">
+                                    <div class="card-header bg-secondary text-white">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-history"></i> Historial de Cambios
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        ${historial.length === 0 ? 
+                                            '<p class="text-center text-muted">No hay cambios registrados para este equipo.</p>' :
+                                            historial.map(cambio => `
+                                                <div class="card mb-2">
+                                                    <div class="card-body py-2">
+                                                        <small class="text-muted">${new Date(cambio.fechaCambio).toLocaleString()}</small>
+                                                        <div class="mt-1">
+                                                            <span class="badge bg-info">${cambio.campoModificado}</span>
+                                                            <span class="badge bg-danger ms-1">${cambio.valorAnterior}</span>
+                                                            <span class="badge bg-success ms-1">${cambio.valorNuevo}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `).join('')
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-warning" onclick="editarEquipo('${equipo._id}')">
+                                    <i class="fas fa-edit"></i> Editar Equipo
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const modalExistente = document.getElementById('historialModal');
+            if (modalExistente) modalExistente.remove();
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('historialModal'));
+            modal.show();
+        }
+
+        // Iniciar carga
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarEquipos();
+        });
+    </script>
+</body>
+</html>
