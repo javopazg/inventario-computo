@@ -28,6 +28,21 @@ router.post('/', async (req, res) => {
     try {
         const equipo = new Equipo(req.body);
         const nuevoEquipo = await equipo.save();
+        if (nuevoEquipo.usuarioAsignado) {
+            const Historial = require('../models/Historial');
+            const historial = new Historial({
+                equipoId: nuevoEquipo._id,
+                campoModificado: 'usuarioAsignado',
+                valorAnterior: 'Sin asignar',
+                valorNuevo: nuevoEquipo.usuarioAsignado,
+                modificadoPor: 'Usuario del sistema'
+            });
+            await historial.save();
+            await Equipo.findByIdAndUpdate(
+                nuevoEquipo._id,
+                { $push: { historialCambios: historial._id } }
+            );
+        }
         res.status(201).json(nuevoEquipo);
     } catch (error) {
         res.status(400).json({ message: error.message });
