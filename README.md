@@ -49,6 +49,28 @@ Aplicación web para gestionar inventario de equipos de computo utilizando Node.
 
 ```
 inventario-computo/
+├── server.js        # Servidor principal (Express + middlewares + rutas)
+├── server-memory.js # Servidor de prueba con datos en memoria
+├── models/          # Modelos de datos (Mongoose)
+│   ├── Equipo.js    # Modelo de equipos
+│   └── Historial.js # Modelo de historial de cambios
+├── routes/          # Rutas de la app
+│   ├── index.js     # Ruta principal (render de la vista)
+│   ├── equipos-api.js   # API REST de equipos
+│   ├── equipos-view.js  # Vistas de equipos (crear/editar)
+│   └── historial.js     # API REST de historial
+├── views/           # Vistas EJS
+│   ├── index.ejs         # Vista principal con UI y modales
+│   └── agregar-equipo.ejs # Formulario standalone de equipos
+├── public/          # Archivos estáticos
+│   ├── css/
+│   │   ├── index.css  # Estilos específicos de la página principal
+│   │   └── style.css  # Estilos base compartidos
+│   └── js/
+│       ├── index.js       # Lógica UI de la página principal
+│       ├── equipo-form.js # Lógica del formulario de equipo
+│       └── main.js        # Scripts generales
+├── uploads/         # Archivos subidos
 ├── models/          # Modelos de datos (Mongoose)
 ├── routes/          # Rutas de la API
 ├── views/           # Vistas EJS
@@ -56,9 +78,10 @@ inventario-computo/
 │   ├── css/
 │   ├── js/
 │   └── images/
-├── uploads/         # Archivos subidos
-├── server.js        # Servidor principal
-└── package.json
+├── .env             # Variables de entorno locales
+├── .gitignore       # Archivos ignorados por Git
+├── package.json     # Dependencias y scripts
+└── package-lock.json # Lockfile de dependencias
 ```
 
 ## Tecnologías Utilizadas
