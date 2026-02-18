@@ -265,6 +265,143 @@
             border-radius: 1rem 1rem 0 0;
         }
 
+        .historial-modal .modal-header {
+            padding: 1rem 1.5rem;
+        }
+
+        .historial-modal .modal-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .historial-modal .modal-body {
+            background: var(--avatar-gray-50);
+            padding: 1.25rem 1.5rem 1.5rem;
+        }
+
+        .historial-section {
+            background: white;
+            border: 1px solid var(--avatar-gray-200);
+            border-radius: 0.9rem;
+            box-shadow: 0 10px 20px -15px rgba(15, 23, 42, 0.35);
+            overflow: hidden;
+        }
+
+        .historial-section-header {
+            padding: 0.9rem 1.2rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+            border-bottom: 1px solid var(--avatar-gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .historial-section-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--avatar-gray-800);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .historial-section-body {
+            padding: 1rem 1.2rem;
+        }
+
+        .historial-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.75rem 1.25rem;
+        }
+
+        .historial-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .historial-info-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--avatar-gray-600);
+            font-weight: 700;
+        }
+
+        .historial-info-value {
+            font-weight: 600;
+            color: var(--avatar-gray-900);
+            word-break: break-word;
+        }
+
+        .historial-credenciales {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.75rem;
+        }
+
+        .credencial-card {
+            border: 1px dashed var(--avatar-gray-300);
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            background: #f8fafc;
+        }
+
+        .credencial-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--avatar-gray-600);
+            font-weight: 700;
+        }
+
+        .credencial-value {
+            margin-top: 0.35rem;
+            font-weight: 600;
+        }
+
+        .historial-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .historial-item {
+            background: #f8fafc;
+            border: 1px solid var(--avatar-gray-200);
+            border-radius: 0.75rem;
+            padding: 0.75rem 0.9rem;
+        }
+
+        .historial-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--avatar-gray-600);
+        }
+
+        .historial-item-badges {
+            margin-top: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        @media (max-width: 992px) {
+            .historial-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .historial-credenciales {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .modal-title {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 700;
@@ -305,6 +442,58 @@
             letter-spacing: 0.05em;
         }
 
+        .page-hero {
+            background: white;
+            border-radius: 1.25rem;
+            padding: 2rem 2.5rem;
+            border: 1px solid var(--avatar-gray-200);
+            box-shadow: 0 20px 30px -25px rgba(15, 23, 42, 0.35);
+        }
+
+        .section-shell {
+            border: 1px solid var(--avatar-gray-200);
+            box-shadow: 0 30px 40px -30px rgba(15, 23, 42, 0.4);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .section-header h3 {
+            font-size: 1.6rem;
+        }
+
+        .filters-bar {
+            background: #f8fafc;
+            border-bottom: 1px solid var(--avatar-gray-200);
+        }
+
+        .filters-panel {
+            background: white;
+            border: 1px solid var(--avatar-gray-200);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            box-shadow: 0 15px 25px -20px rgba(15, 23, 42, 0.25);
+        }
+
+        .table-shell {
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid var(--avatar-gray-200);
+            box-shadow: 0 20px 30px -25px rgba(15, 23, 42, 0.3);
+            padding: 1rem;
+        }
+
+        .empty-state {
+            background: white;
+            border: 1px dashed var(--avatar-gray-300);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+
         .border-top {
             border-top: 2px solid var(--avatar-gray-100) !important;
         }
@@ -336,7 +525,7 @@
     <div class="container mt-5">
         <div class="row mb-4">
             <div class="col-12">
-                <div class="text-center fade-in">
+                <div class="text-center fade-in page-hero">
                     <h1 class="display-4 fw-bold mb-3" style="background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
                         Sistema de Inventario
                     </h1>
@@ -347,43 +536,45 @@
 
         <div class="row">
             <div class="col-12">
-                <div class="card fade-in">
-                    <div class="card-header">
+                <div class="card fade-in section-shell">
+                    <div class="card-header section-header">
                         <h3 class="text-center mb-0">
                             <i class="fas fa-desktop me-2"></i>Listado de Equipos
                         </h3>
                     </div>
                     
                     <!-- Barra de acciones -->
-                    <div class="card-body border-top">
-                        <div class="row align-items-center mb-3">
-                            <div class="col-md-4">
-                                <!-- Filtro por estado -->
-                                <div class="form-group mb-0">
-                                    <label class="form-label">Filtrar por:</label>
-                                    <select id="filtroEstado" class="form-select form-select-sm" onchange="aplicarFiltros()">
-                                        <option value="">Todos los estados</option>
-                                        <option value="Usado">Usado</option>
-                                        <option value="En reparación">En reparación</option>
-                                        <option value="Dado de baja">Dado de baja</option>
-                                    </select>
+                    <div class="card-body border-top filters-bar">
+                        <div class="filters-panel">
+                            <div class="row align-items-center">
+                                <div class="col-md-4">
+                                    <!-- Filtro por estado -->
+                                    <div class="form-group mb-0">
+                                        <label class="form-label">Filtrar por:</label>
+                                        <select id="filtroEstado" class="form-select form-select-sm" onchange="aplicarFiltros()">
+                                            <option value="">Todos los estados</option>
+                                            <option value="Usado">Usado</option>
+                                            <option value="En reparación">En reparación</option>
+                                            <option value="Dado de baja">Dado de baja</option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <!-- Búsqueda por usuario -->
-                                <div class="form-group mb-0">
-                                    <label class="form-label">Buscar usuario:</label>
-                                    <input type="text" 
-                                           id="busquedaUsuario" 
-                                           class="form-control form-control-sm" 
-                                           placeholder="Escriba nombre de usuario..."
-                                           oninput="aplicarFiltros()">
+                                <div class="col-md-4">
+                                    <!-- Búsqueda por usuario -->
+                                    <div class="form-group mb-0">
+                                        <label class="form-label">Buscar usuario:</label>
+                                        <input type="text" 
+                                               id="busquedaUsuario" 
+                                               class="form-control form-control-sm" 
+                                               placeholder="Escriba nombre de usuario..."
+                                               oninput="aplicarFiltros()">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4 text-end">
-                                <button class="btn btn-success" onclick="nuevoEquipo()">
-                                    <i class="fas fa-plus"></i> Agregar Equipo
-                                </button>
+                                <div class="col-md-4 text-end">
+                                    <button class="btn btn-success" onclick="nuevoEquipo()">
+                                        <i class="fas fa-plus"></i> Agregar Equipo
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         
@@ -406,7 +597,7 @@
                         </div>
                         
                         <!-- Alerta de vacío -->
-                        <div id="emptyAlert" class="alert alert-warning text-center" style="display: none;">
+                        <div id="emptyAlert" class="alert alert-warning text-center empty-state" style="display: none;">
                             <h5>No hay equipos registrados</h5>
                             <p>Comienza agregando tu primer equipo al inventario.</p>
                             <button type="button" class="btn btn-primary" onclick="nuevoEquipo()">
@@ -416,7 +607,7 @@
                         
                         <!-- Tabla de equipos -->
                         <div id="equiposContainer" style="display: none;">
-                            <div class="table-responsive">
+                            <div class="table-responsive table-shell">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
@@ -1196,155 +1387,157 @@
             // Resetear visibilidad de claves
             mostrarClaves = false;
             
+            const estadoBadge = equipo.estado === 'Nuevo'
+                ? 'success'
+                : equipo.estado === 'Usado'
+                    ? 'primary'
+                    : equipo.estado === 'En reparación'
+                        ? 'warning'
+                        : 'danger';
+
             const modalHtml = `
-                <div class="modal fade" id="historialModal" tabindex="-1">
+                <div class="modal fade historial-modal" id="historialModal" tabindex="-1">
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">
-                                    <i class="fas fa-info-circle"></i> Información Completa del Equipo
+                                    <i class="fas fa-info-circle"></i>
+                                    Información Completa del Equipo
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
-                                <div class="card mb-4 border-primary">
-                                    <div class="card-header bg-primary text-white">
-                                        <h6 class="mb-0">
-                                            <i class="fas fa-desktop"></i> Datos del Equipo - ${equipo.numeroActivo}
+                                <div class="historial-section mb-4">
+                                    <div class="historial-section-header">
+                                        <h6 class="historial-section-title">
+                                            <i class="fas fa-desktop text-primary"></i>
+                                            Datos del Equipo - ${equipo.numeroActivo}
                                         </h6>
+                                        <span class="badge bg-${estadoBadge}">${equipo.estado}</span>
                                     </div>
-                                    <div class="card-body">
-                                        <!-- Datos principales -->
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <h6 class="text-primary mb-3"><i class="fas fa-info-circle"></i> Datos Principales</h6>
-                                                <div class="table-responsive">
-                                                    <table class="table table-sm table-borderless">
-                                                    <tr><td><strong>Número de Activo:</strong></td><td>${equipo.numeroActivo}</td></tr>
-                                                    <tr><td><strong>Tipo:</strong></td><td>${equipo.tipoEquipo}</td></tr>
-                                                    <tr><td><strong>Marca:</strong></td><td>${equipo.marca}</td></tr>
-                                                    <tr><td><strong>Modelo:</strong></td><td>${equipo.modelo}</td></tr>
-                                                    <tr><td><strong>Número de Serie:</strong></td><td>${equipo.numeroSerie}</td></tr>
-                                                    <tr><td><strong>Año de Compra:</strong></td><td>${equipo.anioCompra}</td></tr>
-                                                    <tr><td><strong>Estado:</strong></td><td><span class="badge bg-${equipo.estado === 'Nuevo' ? 'success' : equipo.estado === 'Usado' ? 'primary' : equipo.estado === 'En reparación' ? 'warning' : 'danger'}">${equipo.estado}</span></td></tr>
-                                                </table>
+                                    <div class="historial-section-body">
+                                        <div class="historial-info-grid mb-4">
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Número de Activo</span>
+                                                <span class="historial-info-value">${equipo.numeroActivo}</span>
                                             </div>
-                                            <div class="col-md-6">
-                                                <h6 class="text-primary mb-3"><i class="fas fa-desktop"></i> Especificaciones</h6>
-                                                <div class="table-responsive">
-                                                    <table class="table table-sm table-borderless">
-                                                    <tr><td><strong>CPU:</strong></td><td>${equipo.cpu}</td></tr>
-                                                    <tr><td><strong>Memoria RAM:</strong></td><td>${equipo.ram}</td></tr>
-                                                    <tr><td><strong>Disco Duro:</strong></td><td>${equipo.disco}</td></tr>
-                                                    <tr><td><strong>Usuario Asignado:</strong></td><td><span class="badge bg-success">${equipo.usuarioAsignado}</span></td></tr>
-                                                    <tr><td><strong>Ubicación:</strong></td><td>${equipo.ubicacion}</td></tr>
-                                                </table>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Tipo</span>
+                                                <span class="historial-info-value">${equipo.tipoEquipo}</span>
+                                            </div>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Marca</span>
+                                                <span class="historial-info-value">${equipo.marca}</span>
+                                            </div>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Modelo</span>
+                                                <span class="historial-info-value">${equipo.modelo}</span>
+                                            </div>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Número de Serie</span>
+                                                <span class="historial-info-value">${equipo.numeroSerie}</span>
+                                            </div>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Año de Compra</span>
+                                                <span class="historial-info-value">${equipo.anioCompra}</span>
+                                            </div>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">CPU</span>
+                                                <span class="historial-info-value">${equipo.cpu}</span>
+                                            </div>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">RAM</span>
+                                                <span class="historial-info-value">${equipo.ram}</span>
+                                            </div>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Disco</span>
+                                                <span class="historial-info-value">${equipo.disco}</span>
+                                            </div>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Usuario Asignado</span>
+                                                <span class="historial-info-value">${equipo.usuarioAsignado}</span>
+                                            </div>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Ubicación</span>
+                                                <span class="historial-info-value">${equipo.ubicacion}</span>
+                                            </div>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Tipo Escritorio Remoto</span>
+                                                <span class="historial-info-value">${equipo.tipoEscritorioRemoto || 'No configurado'}</span>
                                             </div>
                                         </div>
-                                        
-                                        <!-- Acceso y Seguridad -->
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <h6 class="text-warning mb-3"><i class="fas fa-key"></i> Credenciales de Acceso</h6>
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <div class="card bg-light">
-                                                            <div class="card-body">
-                                                                <small class="text-muted">Clave Administrador</small>
-                                                                <div class="input-group">
-                                                                    <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" class="form-control form-control-sm" value="${equipo.claveAdministrador || 'No configurada'}" readonly>
-                                                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="toggleMostrarClaves()">
-                                                                        <i class="fas fa-eye" id="iconoClaves"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+
+                                        <div class="historial-section mb-4">
+                                            <div class="historial-section-header">
+                                                <h6 class="historial-section-title">
+                                                    <i class="fas fa-key text-warning"></i>
+                                                    Credenciales de Acceso
+                                                </h6>
+                                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="toggleMostrarClaves()">
+                                                    <i class="fas fa-eye"></i> Mostrar/Ocultar
+                                                </button>
+                                            </div>
+                                            <div class="historial-section-body">
+                                                <div class="historial-credenciales">
+                                                    <div class="credencial-card">
+                                                        <div class="credencial-label">Clave Administrador</div>
+                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" class="form-control form-control-sm credencial-value" value="${equipo.claveAdministrador || 'No configurada'}" readonly>
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        <div class="card bg-light">
-                                                            <div class="card-body">
-                                                                <small class="text-muted">Clave Remota</small>
-                                                                <div class="input-group">
-                                                                    <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" class="form-control form-control-sm" value="${equipo.claveRemota || 'No configurada'}" readonly>
-                                                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="toggleMostrarClaves()">
-                                                                        <i class="fas fa-eye" id="iconoClaves2"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                    <div class="credencial-card">
+                                                        <div class="credencial-label">Clave Remota</div>
+                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" class="form-control form-control-sm credencial-value" value="${equipo.claveRemota || 'No configurada'}" readonly>
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        <div class="card bg-light">
-                                                            <div class="card-body">
-                                                                <small class="text-muted">Clave BIOS</small>
-                                                                <div class="input-group">
-                                                                    <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" class="form-control form-control-sm" value="${equipo.claveBIOS || 'No configurada'}" readonly>
-                                                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="toggleMostrarClaves()">
-                                                                        <i class="fas fa-eye" id="iconoClaves3"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                    <div class="credencial-card">
+                                                        <div class="credencial-label">Clave BIOS</div>
+                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" class="form-control form-control-sm credencial-value" value="${equipo.claveBIOS || 'No configurada'}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        <!-- Configuración Remota -->
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <h6 class="text-info mb-3"><i class="fas fa-network-wired"></i> Configuración Remota</h6>
-                                                <table class="table table-sm">
-                                                    <tr>
-                                                        <td width="25%"><strong>Tipo Escritorio Remoto:</strong></td>
-                                                        <td>${equipo.tipoEscritorioRemoto || 'No configurado'}</td>
-                                                    </tr>
-                                                </table>
+
+                                        <div class="historial-info-grid">
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Comentarios</span>
+                                                <span class="historial-info-value">${equipo.comentario || 'Sin comentarios'}</span>
                                             </div>
-                                        </div>
-                                        
-                                        <!-- Comentarios y Fechas -->
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <h6 class="text-secondary mb-3"><i class="fas fa-comment"></i> Comentarios</h6>
-                                                <div class="card bg-light">
-                                                    <div class="card-body">
-                                                        ${equipo.comentario || '<span class="text-muted">Sin comentarios</span>'}
-                                                    </div>
-                                                </div>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Fecha de Creación</span>
+                                                <span class="historial-info-value">${new Date(equipo.createdAt).toLocaleDateString()}</span>
                                             </div>
-                                            <div class="col-md-6">
-                                                <h6 class="text-secondary mb-3"><i class="fas fa-calendar"></i> Fechas</h6>
-                                                <table class="table table-sm table-borderless">
-                                                    <tr><td><strong>Fecha de Creación:</strong></td><td>${new Date(equipo.createdAt).toLocaleDateString()}</td></tr>
-                                                    <tr><td><strong>Última Actualización:</strong></td><td>${new Date(equipo.updatedAt).toLocaleDateString()}</td></tr>
-                                                </table>
+                                            <div class="historial-info-item">
+                                                <span class="historial-info-label">Última Actualización</span>
+                                                <span class="historial-info-value">${new Date(equipo.updatedAt).toLocaleDateString()}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="card border-secondary">
-                                    <div class="card-header bg-secondary text-white">
-                                        <h6 class="mb-0">
-                                            <i class="fas fa-history"></i> Historial de Cambios
+                                <div class="historial-section">
+                                    <div class="historial-section-header">
+                                        <h6 class="historial-section-title">
+                                            <i class="fas fa-history text-secondary"></i>
+                                            Historial de Cambios
                                         </h6>
+                                        <span class="badge bg-secondary">${historial.length}</span>
                                     </div>
-                                    <div class="card-body">
+                                    <div class="historial-section-body">
                                         ${historial.length === 0 ? 
-                                            '<p class="text-center text-muted">No hay cambios registrados para este equipo.</p>' :
-                                            historial.map(cambio => `
-                                                <div class="card mb-2">
-                                                    <div class="card-body py-2">
-                                                        <small class="text-muted">${new Date(cambio.fechaCambio).toLocaleString()}</small>
-                                                        <div class="mt-1">
+                                            '<p class="text-center text-muted mb-0">No hay cambios registrados para este equipo.</p>' :
+                                            `<div class="historial-timeline">
+                                                ${historial.map(cambio => `
+                                                    <div class="historial-item">
+                                                        <div class="historial-item-header">
+                                                            <span>${new Date(cambio.fechaCambio).toLocaleString()}</span>
+                                                            <span class="text-muted">Actualizado</span>
+                                                        </div>
+                                                        <div class="historial-item-badges">
                                                             <span class="badge bg-info">${cambio.campoModificado}</span>
-                                                            <span class="badge bg-danger ms-1">${cambio.valorAnterior}</span>
-                                                            <span class="badge bg-success ms-1">${cambio.valorNuevo}</span>
+                                                            <span class="badge bg-danger">${cambio.valorAnterior}</span>
+                                                            <span class="badge bg-success">${cambio.valorNuevo}</span>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            `).join('')
+                                                `).join('')}
+                                            </div>`
                                         }
                                     </div>
                                 </div>
