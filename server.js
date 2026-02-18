@@ -20,6 +20,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/inventari
 
 // Rutas
 app.use('/', require('./routes/index'));
+app.get('/equipos', (req, res) => res.redirect('/'));
 
 // Rutas de vistas para equipos
 const equiposViewRouter = express.Router();
@@ -40,7 +41,6 @@ app.use('/equipos', equiposViewRouter);
 
 // Rutas API
 app.use('/api/equipos', require('./routes/equipos-api'));
-app.use('/api/piezas', require('./routes/piezas'));
 app.use('/api/historial', require('./routes/historial'));
 
 const PORT = process.env.PORT || 3000;

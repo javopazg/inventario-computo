@@ -5,7 +5,7 @@ const Equipo = require('../models/Equipo');
 // GET todos los equipos
 router.get('/', async (req, res) => {
     try {
-        const equipos = await Equipo.find().populate('piezasAsociadas');
+        const equipos = await Equipo.find();
         res.json(equipos);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 // GET un equipo por ID
 router.get('/:id', async (req, res) => {
     try {
-        const equipo = await Equipo.findById(req.params.id).populate('piezasAsociadas');
+        const equipo = await Equipo.findById(req.params.id);
         if (!equipo) return res.status(404).json({ message: 'Equipo no encontrado' });
         res.json(equipo);
     } catch (error) {

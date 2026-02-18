@@ -329,9 +329,6 @@
                 <a class="nav-link" href="/equipos">
                     <i class="fas fa-desktop me-2"></i>Equipos
                 </a>
-                <a class="nav-link" href="/piezas">
-                    <i class="fas fa-cogs me-2"></i>Piezas
-                </a>
             </div>
         </div>
     </nav>
@@ -523,7 +520,7 @@
                     console.log('✅ Datos recibidos:', data);
                     
                     // ID del modal
-                    const modalId = tipo === 'equipo' ? 'editarEquipoModal' : 'editarPiezaModal';
+                    const modalId = 'editarEquipoModal';
                     const modal = document.getElementById(modalId);
                     
                     if (!modal) {
@@ -927,7 +924,7 @@
         function toggleMostrarClaves() {
             mostrarClaves = !mostrarClaves;
             // Actualizar todos los campos de contraseña
-            document.querySelectorAll('input[type="password"], input[type="text"]').forEach(input => {
+            document.querySelectorAll('input[data-secret="true"]').forEach(input => {
                 if (input.id !== 'busquedaUsuario') {
                     input.type = mostrarClaves ? 'text' : 'password';
                 }
@@ -998,7 +995,7 @@
                                                             <div class="card-body">
                                                                 <small class="text-muted">Clave Administrador</small>
                                                                 <div class="input-group">
-                                                                    <input type="${mostrarClaves ? 'text' : 'password'}" class="form-control form-control-sm" value="${equipo.claveAdministrador || 'No configurada'}" readonly>
+                                                                    <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" class="form-control form-control-sm" value="${equipo.claveAdministrador || 'No configurada'}" readonly>
                                                                     <button class="btn btn-outline-secondary btn-sm" type="button" onclick="toggleMostrarClaves()">
                                                                         <i class="fas fa-eye" id="iconoClaves"></i>
                                                                     </button>
@@ -1011,7 +1008,7 @@
                                                             <div class="card-body">
                                                                 <small class="text-muted">Clave Remota</small>
                                                                 <div class="input-group">
-                                                                    <input type="${mostrarClaves ? 'text' : 'password'}" class="form-control form-control-sm" value="${equipo.claveRemota || 'No configurada'}" readonly>
+                                                                    <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" class="form-control form-control-sm" value="${equipo.claveRemota || 'No configurada'}" readonly>
                                                                     <button class="btn btn-outline-secondary btn-sm" type="button" onclick="toggleMostrarClaves()">
                                                                         <i class="fas fa-eye" id="iconoClaves2"></i>
                                                                     </button>
@@ -1024,7 +1021,7 @@
                                                             <div class="card-body">
                                                                 <small class="text-muted">Clave BIOS</small>
                                                                 <div class="input-group">
-                                                                    <input type="${mostrarClaves ? 'text' : 'password'}" class="form-control form-control-sm" value="${equipo.claveBIOS || 'No configurada'}" readonly>
+                                                                    <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" class="form-control form-control-sm" value="${equipo.claveBIOS || 'No configurada'}" readonly>
                                                                     <button class="btn btn-outline-secondary btn-sm" type="button" onclick="toggleMostrarClaves()">
                                                                         <i class="fas fa-eye" id="iconoClaves3"></i>
                                                                     </button>

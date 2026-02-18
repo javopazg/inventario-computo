@@ -9,32 +9,21 @@ const app = express();
 let equipos = [
     {
         _id: '1',
+        numeroActivo: 'AG-001',
         tipoEquipo: 'Laptop',
         marca: 'Dell',
         modelo: 'Latitude 5420',
+        cpu: 'Intel i5',
+        ram: '8GB',
+        disco: '256GB SSD',
         numeroSerie: 'DL001',
-        procesador: 'Intel i5',
-        memoriaRAM: '8GB',
-        almacenamiento: '256GB SSD',
+        anioCompra: 2022,
         estado: 'Usado',
         ubicacion: 'Oficina 1',
-        responsable: 'Juan Pérez'
+        usuarioAsignado: 'Juan Pérez'
     }
 ];
 
-let piezas = [
-    {
-        _id: '1',
-        nombrePieza: 'Memoria RAM DDR4',
-        tipoPieza: 'Memoria RAM',
-        marca: 'Corsair',
-        modelo: 'Vengeance LPX',
-        especificaciones: '8GB 3200MHz',
-        estado: 'Nuevo',
-        cantidad: 5,
-        ubicacion: 'Almacén'
-    }
-];
 
 // Middleware
 app.use(cors());
@@ -45,7 +34,6 @@ app.set('view engine', 'ejs');
 
 // Rutas API
 app.get('/api/equipos', (req, res) => res.json(equipos));
-app.get('/api/piezas', (req, res) => res.json(piezas));
 
 // Rutas principales
 app.use('/', require('./routes/index'));

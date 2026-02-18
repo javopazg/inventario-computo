@@ -58,10 +58,6 @@ const equipoSchema = new mongoose.Schema({
         enum: ['Nuevo', 'Usado', 'En reparación', 'Dado de baja'],
         default: 'Usado'
     },
-    piezasAsociadas: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Pieza'
-    }],
     historialCambios: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Historial'
