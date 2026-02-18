@@ -381,7 +381,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4 text-end">
-                                <button class="btn btn-success" onclick="window.location.href='/equipos/nuevo'">
+                                <button class="btn btn-success" onclick="nuevoEquipo()">
                                     <i class="fas fa-plus"></i> Agregar Equipo
                                 </button>
                             </div>
@@ -409,9 +409,9 @@
                         <div id="emptyAlert" class="alert alert-warning text-center" style="display: none;">
                             <h5>No hay equipos registrados</h5>
                             <p>Comienza agregando tu primer equipo al inventario.</p>
-                            <a href="/equipos/nuevo" class="btn btn-primary">
+                            <button type="button" class="btn btn-primary" onclick="nuevoEquipo()">
                                 <i class="fas fa-plus"></i> Agregar Primer Equipo
-                            </a>
+                            </button>
                         </div>
                         
                         <!-- Tabla de equipos -->
@@ -488,6 +488,120 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de nuevo equipo -->
+    <div class="modal fade" id="nuevoEquipoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-plus"></i> Agregar Equipo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="nuevoEquipoForm" novalidate>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoNumeroActivo">Número de Activo *</label>
+                                <input id="nuevoNumeroActivo" name="numeroActivo" type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoTipoEquipo">Tipo de Equipo *</label>
+                                <select id="nuevoTipoEquipo" name="tipoEquipo" class="form-select" required>
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Laptop">Laptop</option>
+                                    <option value="PC">PC</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoEstado">Estado</label>
+                                <select id="nuevoEstado" name="estado" class="form-select">
+                                    <option value="Nuevo">Nuevo</option>
+                                    <option value="Usado" selected>Usado</option>
+                                    <option value="En reparación">En reparación</option>
+                                    <option value="Dado de baja">Dado de baja</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoMarca">Marca *</label>
+                                <input id="nuevoMarca" name="marca" type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoModelo">Modelo *</label>
+                                <input id="nuevoModelo" name="modelo" type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoNumeroSerie">Número de Serie *</label>
+                                <input id="nuevoNumeroSerie" name="numeroSerie" type="text" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoCpu">CPU *</label>
+                                <input id="nuevoCpu" name="cpu" type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoRam">RAM *</label>
+                                <input id="nuevoRam" name="ram" type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoDisco">Disco Duro *</label>
+                                <input id="nuevoDisco" name="disco" type="text" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoAnioCompra">Año de Compra *</label>
+                                <input id="nuevoAnioCompra" name="anioCompra" type="number" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoUbicacion">Ubicación *</label>
+                                <input id="nuevoUbicacion" name="ubicacion" type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoUsuarioAsignado">Usuario Asignado *</label>
+                                <input id="nuevoUsuarioAsignado" name="usuarioAsignado" type="text" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoTipoEscritorioRemoto">Tipo Escritorio Remoto</label>
+                                <input id="nuevoTipoEscritorioRemoto" name="tipoEscritorioRemoto" type="text" class="form-control">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoClaveAdministrador">Clave Administrador</label>
+                                <input id="nuevoClaveAdministrador" name="claveAdministrador" type="password" class="form-control">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoClaveRemota">Clave Remota</label>
+                                <input id="nuevoClaveRemota" name="claveRemota" type="password" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label" for="nuevoClaveBIOS">Clave BIOS</label>
+                                <input id="nuevoClaveBIOS" name="claveBIOS" type="password" class="form-control">
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label" for="nuevoComentario">Comentario</label>
+                                <textarea id="nuevoComentario" name="comentario" class="form-control" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar equipo</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -941,6 +1055,21 @@
             modal.show();
         }
 
+        function nuevoEquipo() {
+            const modalEl = document.getElementById('nuevoEquipoModal');
+            if (!modalEl) {
+                alert('No se pudo abrir el formulario de nuevo equipo.');
+                return;
+            }
+            const form = document.getElementById('nuevoEquipoForm');
+            if (form) {
+                form.reset();
+                form.classList.remove('was-validated');
+            }
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+
         function eliminarEquipo(id) {
             if (confirm('¿Estás seguro de que deseas eliminar este equipo?')) {
                 fetch(`/api/equipos/${id}`, {
@@ -1240,6 +1369,49 @@
 
         // Iniciar carga
         document.addEventListener('DOMContentLoaded', function() {
+            const nuevoForm = document.getElementById('nuevoEquipoForm');
+            if (nuevoForm) {
+                nuevoForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (!nuevoForm.checkValidity()) {
+                        nuevoForm.classList.add('was-validated');
+                        return;
+                    }
+
+                    const formData = new FormData(nuevoForm);
+                    const payload = {};
+                    for (const [key, value] of formData.entries()) {
+                        if (value !== null && value !== undefined && String(value).trim() !== '') {
+                            payload[key] = key === 'anioCompra' ? parseInt(value, 10) : String(value).trim();
+                        }
+                    }
+
+                    try {
+                        const response = await fetch('/api/equipos', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.message || 'Error al crear el equipo');
+                        }
+
+                        const modalEl = document.getElementById('nuevoEquipoModal');
+                        const modal = modalEl ? bootstrap.Modal.getInstance(modalEl) : null;
+                        if (modal) modal.hide();
+                        await cargarEquipos();
+                        alert('Equipo agregado correctamente');
+                    } catch (error) {
+                        console.error('Error al crear:', error);
+                        alert(`Error al crear el equipo: ${error.message}`);
+                    }
+                });
+            }
+
             const editarForm = document.getElementById('editarEquipoForm');
             if (editarForm) {
                 editarForm.addEventListener('submit', async function(e) {
