@@ -31,39 +31,31 @@
                 .replace(/'/g, '&#39;');
         }
 
-        // Función para confirmar eliminación
-        function confirmDelete(id, tipo) {
-            if (confirm(`¿Estás seguro de que deseas eliminar este ${tipo}?`)) {
-                fetch(`/api/${tipo}s/${id}`, {
-                    method: 'DELETE'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    showToast(data.message, 'success');
-                    cargarEquipos();
-                })
-                .catch(error => console.error('Error:', error));
-            }
-        }
-
-        // Función para confirmar eliminación
-        function confirmarEliminacion(id, tipo) {
-            confirmDelete(id, tipo);
-        }
+        // Función para confirmar eliminación (se usa en eliminarEquipo)
     
 
         // Variable global para almacenar todos los equipos
         let todosLosEquipos = [];
+        let equiposFiltrados = [];
+        let currentPage = 1;
+        const pageSize = 10;
+        let equiposAbortController = null;
 
         // Cargar listado de equipos
         async function cargarEquipos() {
             console.log('Cargando equipos...');
             try {
-                const response = await fetch('/api/equipos');
+                if (equiposAbortController) {
+                    equiposAbortController.abort();
+                }
+                equiposAbortController = new AbortController();
+                const response = await fetch('/api/equipos', { signal: equiposAbortController.signal });
                 const equipos = await response.json();
                 console.log('Equipos cargados:', equipos.length);
                 
                 todosLosEquipos = equipos;
+                equiposFiltrados = [...equipos];
+                currentPage = 1;
                 document.getElementById('loadingAlert').style.display = 'none';
                 
                 if (equipos.length === 0) {
@@ -74,7 +66,9 @@
                     actualizarResumen(equipos);
                 }
             } catch (error) {
-                console.error('Error:', error);
+                if (error.name !== 'AbortError') {
+                    console.error('Error:', error);
+                }
                 document.getElementById('loadingAlert').innerHTML = 'Error al cargar equipos';
             }
         }
@@ -84,7 +78,7 @@
             const estadoSeleccionado = document.getElementById('filtroEstado').value;
             const textoBusqueda = document.getElementById('busquedaUsuario').value.trim().toLowerCase();
             
-            let equiposFiltrados = [...todosLosEquipos];
+            equiposFiltrados = [...todosLosEquipos];
             
             // Aplicar filtro por estado
             if (estadoSeleccionado) {
@@ -121,6 +115,7 @@
                     tbody.innerHTML = '<tr><td colspan="11" class="text-center">No hay equipos con el estado seleccionado</td></tr>';
                 }
             } else {
+                currentPage = 1;
                 mostrarEquipos(equiposFiltrados);
             }
             
@@ -201,7 +196,8 @@
                 return a.numeroActivo.localeCompare(b.numeroActivo);
             });
             
-            equipos.forEach(equipo => {
+            const paginated = paginate(equipos);
+            paginated.forEach(equipo => {
                 const row = document.createElement('tr');
                 
                 const estadoClass = {
@@ -249,14 +245,14 @@
                     </td>
                     <td>
                         <div class="dropdown action-dropdown">
-                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Acciones del equipo">
                                 Acciones
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><button class="dropdown-item" type="button" onclick="verHistorialCompleto('${equipo._id}')"><i class="fas fa-circle-info me-2"></i>Ver info</button></li>
-                                <li><button class="dropdown-item" type="button" onclick="editarEquipo('${equipo._id}')"><i class="fas fa-pen me-2"></i>Editar</button></li>
+                                <li><button class="dropdown-item" type="button" onclick="verHistorialCompleto('${equipo._id}')" aria-label="Ver información completa"><i class="fas fa-circle-info me-2"></i>Ver info</button></li>
+                                <li><button class="dropdown-item" type="button" onclick="editarEquipo('${equipo._id}')" aria-label="Editar equipo"><i class="fas fa-pen me-2"></i>Editar</button></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><button class="dropdown-item text-danger" type="button" onclick="eliminarEquipo('${equipo._id}')"><i class="fas fa-trash me-2"></i>Eliminar</button></li>
+                                <li><button class="dropdown-item text-danger" type="button" onclick="eliminarEquipo('${equipo._id}')" aria-label="Eliminar equipo"><i class="fas fa-trash me-2"></i>Eliminar</button></li>
                             </ul>
                         </div>
                     </td>
@@ -265,6 +261,39 @@
                 tbody.appendChild(row);
             });
             console.log('Equipos mostrados:', equipos.length);
+            renderPagination(equipos.length);
+        }
+
+        function paginate(items) {
+            const start = (currentPage - 1) * pageSize;
+            return items.slice(start, start + pageSize);
+        }
+
+        function renderPagination(totalItems) {
+            const container = document.getElementById('paginationControls');
+            if (!container) return;
+            const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+            const prevDisabled = currentPage === 1 ? 'disabled' : '';
+            const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+            container.className = 'pagination-controls d-flex justify-content-between align-items-center mt-3';
+            container.innerHTML = `
+                <button class="btn btn-outline-secondary btn-sm" id="prevPageBtn" ${prevDisabled}>Anterior</button>
+                <div class="page-info">Página ${currentPage} de ${totalPages}</div>
+                <button class="btn btn-outline-secondary btn-sm" id="nextPageBtn" ${nextDisabled}>Siguiente</button>
+            `;
+            container.querySelector('#prevPageBtn').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage -= 1;
+                    mostrarEquipos(equiposFiltrados);
+                }
+            });
+            container.querySelector('#nextPageBtn').addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage += 1;
+                    mostrarEquipos(equiposFiltrados);
+                }
+            });
         }
 
         // Actualizar resumen de estadísticas
@@ -882,6 +911,16 @@
 
         // Iniciar carga
         document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('busquedaUsuario');
+            if (searchInput) {
+                let debounceTimer = null;
+                searchInput.addEventListener('input', () => {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        aplicarFiltros();
+                    }, 250);
+                });
+            }
             cargarEquipos();
         });
     

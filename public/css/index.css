@@ -276,6 +276,15 @@
             display: block;
         }
 
+        .pagination-controls .btn {
+            min-width: 36px;
+        }
+
+        .pagination-controls .page-info {
+            font-weight: 600;
+            color: var(--avatar-gray-600);
+        }
+
         .badge {
             font-weight: 600;
             font-size: 0.75rem;
