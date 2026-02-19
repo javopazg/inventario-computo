@@ -303,17 +303,15 @@
         }
 
         function verHistorialCompleto(id) {
-            Promise.all([
-                fetch(`/api/equipos/${id}`).then(response => response.json()),
-                fetch(`/api/historial/equipo/${id}`).then(response => response.json())
-            ])
-            .then(([equipo, historial]) => {
-                mostrarModalHistorialCompleto(equipo, historial);
-            })
-            .catch(error => {
-                console.error('Error al cargar datos:', error);
-                showToast('Error al cargar el historial completo', 'danger');
-            });
+            fetch(`/api/equipos/${id}`)
+                .then(response => response.json())
+                .then(equipo => {
+                    mostrarModalHistorialCompleto(equipo, []);
+                })
+                .catch(error => {
+                    console.error('Error al cargar datos:', error);
+                    showToast('Error al cargar la información del equipo', 'danger');
+                });
         }
 
         function editarEquipo(id) {
@@ -505,51 +503,54 @@
                                         <div class="historial-info-grid mb-4">
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Número de Activo</span>
-                                                <span class="historial-info-value">${equipo.numeroActivo}</span>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="numeroActivo" value="${equipo.numeroActivo || ''}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Tipo</span>
-                                                <span class="historial-info-value">${equipo.tipoEquipo}</span>
+                                                <select class="form-select form-select-sm historial-edit-field" data-field="tipoEquipo" disabled>
+                                                    <option value="Laptop" ${equipo.tipoEquipo === 'Laptop' ? 'selected' : ''}>Laptop</option>
+                                                    <option value="PC" ${equipo.tipoEquipo === 'PC' ? 'selected' : ''}>PC</option>
+                                                </select>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Marca</span>
-                                                <span class="historial-info-value">${equipo.marca}</span>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="marca" value="${equipo.marca || ''}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Modelo</span>
-                                                <span class="historial-info-value">${equipo.modelo}</span>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="modelo" value="${equipo.modelo || ''}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Número de Serie</span>
-                                                <span class="historial-info-value">${equipo.numeroSerie}</span>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="numeroSerie" value="${equipo.numeroSerie || ''}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Año de Compra</span>
-                                                <span class="historial-info-value">${equipo.anioCompra}</span>
+                                                <input type="number" class="form-control form-control-sm historial-edit-field" data-field="anioCompra" value="${equipo.anioCompra || ''}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">CPU</span>
-                                                <span class="historial-info-value">${equipo.cpu}</span>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="cpu" value="${equipo.cpu || ''}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">RAM</span>
-                                                <span class="historial-info-value">${equipo.ram}</span>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="ram" value="${equipo.ram || ''}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Disco</span>
-                                                <span class="historial-info-value">${equipo.disco}</span>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="disco" value="${equipo.disco || ''}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Usuario Asignado</span>
-                                                <span class="historial-info-value">${equipo.usuarioAsignado}</span>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="usuarioAsignado" value="${equipo.usuarioAsignado || ''}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Ubicación</span>
-                                                <span class="historial-info-value">${equipo.ubicacion}</span>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="ubicacion" value="${equipo.ubicacion || ''}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Tipo Escritorio Remoto</span>
-                                                <span class="historial-info-value">${equipo.tipoEscritorioRemoto || 'No configurado'}</span>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="tipoEscritorioRemoto" value="${equipo.tipoEscritorioRemoto || ''}" readonly>
                                             </div>
                                         </div>
 
@@ -584,7 +585,7 @@
                                         <div class="historial-info-grid">
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Comentarios</span>
-                                                <span class="historial-info-value">${equipo.comentario || 'Sin comentarios'}</span>
+                                                <textarea class="form-control form-control-sm historial-edit-field" data-field="comentario" rows="2" readonly>${equipo.comentario || ''}</textarea>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Fecha de Creación</span>
@@ -600,8 +601,14 @@
                                 
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-warning" onclick="editarEquipo('${equipo._id}')">
+                                <button type="button" class="btn btn-warning" id="btnEditarEnModal">
                                     <i class="fas fa-edit"></i> Editar Equipo
+                                </button>
+                                <button type="button" class="btn btn-primary d-none" id="btnGuardarEnModal">
+                                    <i class="fas fa-save"></i> Guardar
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary d-none" id="btnCancelarEnModal">
+                                    Cancelar
                                 </button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                             </div>
@@ -614,8 +621,79 @@
             if (modalExistente) modalExistente.remove();
             
             document.body.insertAdjacentHTML('beforeend', modalHtml);
-            const modal = new bootstrap.Modal(document.getElementById('historialModal'));
+            const modalEl = document.getElementById('historialModal');
+            const modal = new bootstrap.Modal(modalEl);
             modal.show();
+
+            const editableFields = modalEl.querySelectorAll('.historial-edit-field');
+            editableFields.forEach(field => {
+                field.dataset.original = field.value;
+            });
+
+            const btnEditar = modalEl.querySelector('#btnEditarEnModal');
+            const btnGuardar = modalEl.querySelector('#btnGuardarEnModal');
+            const btnCancelar = modalEl.querySelector('#btnCancelarEnModal');
+
+            const setEditMode = (enabled) => {
+                editableFields.forEach(field => {
+                    if (field.tagName === 'SELECT') {
+                        field.disabled = !enabled;
+                    } else if (field.tagName === 'TEXTAREA') {
+                        field.readOnly = !enabled;
+                    } else {
+                        field.readOnly = !enabled;
+                    }
+                });
+                btnEditar.classList.toggle('d-none', enabled);
+                btnGuardar.classList.toggle('d-none', !enabled);
+                btnCancelar.classList.toggle('d-none', !enabled);
+            };
+
+            btnEditar.addEventListener('click', () => setEditMode(true));
+            btnCancelar.addEventListener('click', () => {
+                editableFields.forEach(field => {
+                    field.value = field.dataset.original || '';
+                });
+                setEditMode(false);
+            });
+
+            btnGuardar.addEventListener('click', async () => {
+                const payload = {};
+                editableFields.forEach(field => {
+                    const key = field.dataset.field;
+                    if (!key) return;
+                    const value = field.value;
+                    if (value !== null && value !== undefined) {
+                        payload[key] = key === 'anioCompra' ? parseInt(value, 10) : String(value).trim();
+                    }
+                });
+
+                try {
+                    const response = await fetch(`/api/equipos/${equipo._id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) {
+                        const errData = await response.json();
+                        throw new Error(errData.message || 'Error al actualizar el equipo');
+                    }
+                    const actualizado = await response.json();
+                    editableFields.forEach(field => {
+                        const key = field.dataset.field;
+                        if (key && actualizado[key] !== undefined) {
+                            field.value = actualizado[key] ?? '';
+                            field.dataset.original = field.value;
+                        }
+                    });
+                    setEditMode(false);
+                    showToast('Equipo actualizado correctamente', 'success');
+                    cargarEquipos();
+                } catch (error) {
+                    console.error('Error al actualizar:', error);
+                    showToast(`Error al actualizar el equipo: ${error.message}`, 'danger');
+                }
+            });
         }
 
         // Iniciar carga
