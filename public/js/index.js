@@ -108,6 +108,8 @@
             } else {
                 contenedorBusqueda.style.display = 'none';
             }
+
+            renderActiveFilters(estadoSeleccionado, textoBusqueda);
             
             const tbody = document.getElementById('equiposTableBody');
             const safeBusqueda = escapeHtml(textoBusqueda);
@@ -124,6 +126,41 @@
             
             // Actualizar contador de resultados
             actualizarContadorResultados(equiposFiltrados.length, todosLosEquipos.length);
+        }
+
+        function renderActiveFilters(estado, textoBusqueda) {
+            const container = document.getElementById('activeFilters');
+            if (!container) return;
+            const chips = [];
+            if (estado) {
+                chips.push({ label: `Estado: ${estado}`, clear: () => {
+                    document.getElementById('filtroEstado').value = '';
+                }});
+            }
+            if (textoBusqueda) {
+                chips.push({ label: `Usuario: ${textoBusqueda}`, clear: () => {
+                    document.getElementById('busquedaUsuario').value = '';
+                }});
+            }
+            if (chips.length === 0) {
+                container.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
+            container.style.display = 'flex';
+            container.innerHTML = chips.map((chip, index) => `
+                <span class="filter-chip">
+                    ${escapeHtml(chip.label)}
+                    <button type="button" data-chip-index="${index}" aria-label="Quitar filtro">×</button>
+                </span>
+            `).join('');
+            container.querySelectorAll('button[data-chip-index]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const idx = parseInt(btn.dataset.chipIndex, 10);
+                    if (chips[idx]) chips[idx].clear();
+                    aplicarFiltros();
+                });
+            });
         }
 
         // Actualizar contador de resultados
@@ -173,7 +210,19 @@
                     'En reparación': 'bg-warning',
                     'Dado de baja': 'bg-danger'
                 }[equipo.estado] || 'bg-secondary';
+                const estadoIcon = {
+                    'Nuevo': 'fa-star',
+                    'Usado': 'fa-circle-check',
+                    'En reparación': 'fa-wrench',
+                    'Dado de baja': 'fa-ban'
+                }[equipo.estado] || 'fa-circle';
                 
+                const estadoSlug = String(equipo.estado || 'usado')
+                    .toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/[^a-z-]/g, '');
+                row.classList.add(`row-estado-${estadoSlug}`);
+
                 row.innerHTML = `
                     <td>
                         <button type="button" class="btn btn-link p-0 text-primary fw-bold" onclick="verHistorialCompleto('${equipo._id}')" title="Ver historial completo">
@@ -193,15 +242,22 @@
                         </button>
                     </td>
                     <td><small>${safe(equipo.ubicacion)}</small></td>
-                    <td><span class="badge ${estadoClass}">${safe(equipo.estado)}</span></td>
                     <td>
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-warning" onclick="editarEquipo('${equipo._id}')" title="Editar">
-                                <i class="fas fa-edit"></i>
+                        <span class="badge ${estadoClass}">
+                            <i class="fas ${estadoIcon} me-1"></i>${safe(equipo.estado)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="dropdown action-dropdown">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Acciones
                             </button>
-                            <button class="btn btn-outline-danger" onclick="eliminarEquipo('${equipo._id}')" title="Eliminar">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><button class="dropdown-item" type="button" onclick="verHistorialCompleto('${equipo._id}')"><i class="fas fa-circle-info me-2"></i>Ver info</button></li>
+                                <li><button class="dropdown-item" type="button" onclick="editarEquipo('${equipo._id}')"><i class="fas fa-pen me-2"></i>Editar</button></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><button class="dropdown-item text-danger" type="button" onclick="eliminarEquipo('${equipo._id}')"><i class="fas fa-trash me-2"></i>Eliminar</button></li>
+                            </ul>
                         </div>
                     </td>
                 `;
@@ -454,6 +510,21 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
+                                <ul class="nav nav-tabs modal-tabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" type="button" data-tab-target="datos">Datos</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" type="button" data-tab-target="usuarios">Usuarios</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" type="button" data-tab-target="credenciales">Credenciales</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" type="button" data-tab-target="comentarios">Comentarios</button>
+                                    </li>
+                                </ul>
+                                <div class="modal-tab active" data-tab="datos">
                                 <div class="historial-section mb-4">
                                     <div class="historial-section-header">
                                         <h6 class="historial-section-title">
@@ -525,7 +596,10 @@
                                                 <input class="form-control form-control-sm historial-edit-field" data-field="tipoEscritorioRemoto" value="${equipoSafe.tipoEscritorioRemoto}" readonly>
                                             </div>
                                         </div>
-
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="modal-tab" data-tab="usuarios">
                                         <div class="historial-section mb-4">
                                             <div class="historial-section-header">
                                                 <h6 class="historial-section-title">
@@ -558,7 +632,8 @@
                                                 </div>
                                             </div>
                                         </div>
-
+                                </div>
+                                <div class="modal-tab" data-tab="credenciales">
                                         <div class="historial-section mb-4">
                                             <div class="historial-section-header">
                                                 <h6 class="historial-section-title">
@@ -573,32 +648,45 @@
                                                 <div class="historial-credenciales">
                                                     <div class="credencial-card">
                                                         <div class="credencial-label">Clave Administrador</div>
-                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveAdministrador" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipoSafe.claveAdministrador}" readonly>
+                                                        <input id="cred-admin" type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveAdministrador" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipoSafe.claveAdministrador}" readonly>
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm mt-2" data-copy-target="cred-admin">Copiar</button>
                                                     </div>
                                                     <div class="credencial-card">
                                                         <div class="credencial-label">Clave Remota</div>
-                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveRemota" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipoSafe.claveRemota}" readonly>
+                                                        <input id="cred-remota" type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveRemota" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipoSafe.claveRemota}" readonly>
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm mt-2" data-copy-target="cred-remota">Copiar</button>
                                                     </div>
                                                     <div class="credencial-card">
                                                         <div class="credencial-label">Clave BIOS</div>
-                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveBIOS" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipoSafe.claveBIOS}" readonly>
+                                                        <input id="cred-bios" type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveBIOS" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipoSafe.claveBIOS}" readonly>
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm mt-2" data-copy-target="cred-bios">Copiar</button>
                                                     </div>
                                                 </div>
-                                            </div>
                                         </div>
-
-                                        <div class="historial-info-grid">
-                                            <div class="historial-info-item">
-                                                <span class="historial-info-label">Comentarios</span>
-                                                <textarea class="form-control form-control-sm historial-edit-field" data-field="comentario" rows="2" readonly>${equipoSafe.comentario}</textarea>
-                                            </div>
-                                            <div class="historial-info-item">
-                                                <span class="historial-info-label">Fecha de Creación</span>
-                                                <span class="historial-info-value">${new Date(equipo.createdAt).toLocaleDateString()}</span>
-                                            </div>
-                                            <div class="historial-info-item">
-                                                <span class="historial-info-label">Última Actualización</span>
-                                                <span class="historial-info-value">${new Date(equipo.updatedAt).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                                <div class="modal-tab" data-tab="comentarios">
+                                    <div class="historial-section mb-4">
+                                        <div class="historial-section-header">
+                                            <h6 class="historial-section-title">
+                                                <i class="fas fa-comment text-secondary"></i>
+                                                Comentarios y Fechas
+                                            </h6>
+                                        </div>
+                                        <div class="historial-section-body">
+                                            <div class="historial-info-grid">
+                                                <div class="historial-info-item">
+                                                    <span class="historial-info-label">Comentarios</span>
+                                                    <textarea class="form-control form-control-sm historial-edit-field" data-field="comentario" rows="2" readonly>${equipoSafe.comentario}</textarea>
+                                                </div>
+                                                <div class="historial-info-item">
+                                                    <span class="historial-info-label">Fecha de Creación</span>
+                                                    <span class="historial-info-value">${new Date(equipo.createdAt).toLocaleDateString()}</span>
+                                                </div>
+                                                <div class="historial-info-item">
+                                                    <span class="historial-info-label">Última Actualización</span>
+                                                    <span class="historial-info-value">${new Date(equipo.updatedAt).toLocaleDateString()}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -629,6 +717,37 @@
             const modalEl = document.getElementById('historialModal');
             const modal = new bootstrap.Modal(modalEl);
             modal.show();
+
+            const tabButtons = modalEl.querySelectorAll('[data-tab-target]');
+            const tabPanels = modalEl.querySelectorAll('.modal-tab');
+            tabButtons.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const target = btn.getAttribute('data-tab-target');
+                    tabButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    tabPanels.forEach(panel => {
+                        panel.classList.toggle('active', panel.getAttribute('data-tab') === target);
+                    });
+                });
+            });
+
+            modalEl.querySelectorAll('[data-copy-target]').forEach((btn) => {
+                btn.addEventListener('click', async () => {
+                    const targetId = btn.getAttribute('data-copy-target');
+                    const input = modalEl.querySelector(`#${targetId}`);
+                    if (!input) return;
+                    if (!confirm('¿Deseas copiar este valor al portapapeles?')) return;
+                    const value = input.value || '';
+                    try {
+                        await navigator.clipboard.writeText(value);
+                        showToast('Copiado al portapapeles', 'success');
+                    } catch (error) {
+                        input.select();
+                        document.execCommand('copy');
+                        showToast('Copiado al portapapeles', 'success');
+                    }
+                });
+            });
 
             const editableFields = modalEl.querySelectorAll('.historial-edit-field');
             const estadoBadgeEl = modalEl.querySelector('.historial-section-header .badge');

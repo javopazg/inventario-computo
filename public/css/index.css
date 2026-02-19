@@ -202,6 +202,80 @@
             background: var(--avatar-gray-50);
         }
 
+        .row-estado-nuevo {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.08), rgba(255, 255, 255, 0));
+        }
+
+        .row-estado-usado {
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.08), rgba(255, 255, 255, 0));
+        }
+
+        .row-estado-en-reparacion {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.08), rgba(255, 255, 255, 0));
+        }
+
+        .row-estado-dado-de-baja {
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.08), rgba(255, 255, 255, 0));
+        }
+
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #eef2ff;
+            color: var(--avatar-primary-dark);
+            border: 1px solid rgba(30, 64, 175, 0.2);
+            border-radius: 999px;
+            padding: 0.35rem 0.75rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .filter-chip button {
+            border: none;
+            background: transparent;
+            color: var(--avatar-primary-dark);
+            font-weight: 700;
+            padding: 0;
+        }
+
+        .action-dropdown .dropdown-toggle::after {
+            margin-left: 0.5rem;
+        }
+
+        .action-dropdown .dropdown-menu {
+            border-radius: 0.75rem;
+            border: 1px solid var(--avatar-gray-200);
+            box-shadow: 0 20px 30px -24px rgba(15, 23, 42, 0.35);
+        }
+
+        .action-dropdown .dropdown-item {
+            font-weight: 600;
+        }
+
+        .nav-tabs .nav-link {
+            font-weight: 600;
+            color: var(--avatar-gray-600);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--avatar-primary);
+        }
+
+        .modal-tab {
+            display: none;
+        }
+
+        .modal-tab.active {
+            display: block;
+        }
+
         .badge {
             font-weight: 600;
             font-size: 0.75rem;
