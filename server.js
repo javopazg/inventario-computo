@@ -15,7 +15,14 @@ const corsOrigins = process.env.CORS_ORIGIN
     : true;
 
 app.use(cors({ origin: corsOrigins }));
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+            "script-src-attr": ["'unsafe-inline'"]
+        }
+    }
+}));
 app.use(rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 300,
@@ -26,6 +33,7 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(mongoSanitize());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/vendor', express.static(path.join(__dirname, 'node_modules')));
 app.set('view engine', 'ejs');
 
 // Conexión a MongoDB

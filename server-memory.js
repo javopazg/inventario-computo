@@ -18,7 +18,7 @@ let equipos = [
         disco: '256GB SSD',
         numeroSerie: 'DL001',
         anioCompra: 2022,
-        estado: 'Usado',
+        estado: 'En Uso',
         ubicacion: 'Oficina 1',
         usuarioAsignado: 'Juan Pérez'
     }
@@ -30,6 +30,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/vendor', express.static(path.join(__dirname, 'node_modules')));
 app.set('view engine', 'ejs');
 
 // Rutas API

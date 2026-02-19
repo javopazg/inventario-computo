@@ -58,6 +58,13 @@
                 currentPage = 1;
                 document.getElementById('loadingAlert').style.display = 'none';
                 
+                const estadoSeleccionado = document.getElementById('filtroEstado')?.value || '';
+                const textoBusqueda = document.getElementById('busquedaUsuario')?.value.trim() || '';
+                if (estadoSeleccionado || textoBusqueda) {
+                    aplicarFiltros();
+                    return;
+                }
+
                 if (equipos.length === 0) {
                     document.getElementById('emptyAlert').style.display = 'block';
                 } else {
@@ -201,16 +208,16 @@
                 const row = document.createElement('tr');
                 
                 const estadoClass = {
-                    'Nuevo': 'bg-success',
-                    'Usado': 'bg-primary',
+                    'Disponible': 'bg-success',
+                    'En Uso': 'bg-primary',
                     'En reparación': 'bg-warning',
-                    'Dado de baja': 'bg-danger'
+                    'De Baja': 'bg-danger'
                 }[equipo.estado] || 'bg-secondary';
                 const estadoIcon = {
-                    'Nuevo': 'fa-star',
-                    'Usado': 'fa-circle-check',
+                    'Disponible': 'fa-star',
+                    'En Uso': 'fa-circle-check',
                     'En reparación': 'fa-wrench',
-                    'Dado de baja': 'fa-ban'
+                    'De Baja': 'fa-ban'
                 }[equipo.estado] || 'fa-circle';
                 
                 const estadoSlug = String(equipo.estado || 'usado')
@@ -301,7 +308,7 @@
             const total = equipos.length;
             const laptops = equipos.filter(e => e.tipoEquipo === 'Laptop').length;
             const pcs = equipos.filter(e => e.tipoEquipo === 'PC').length;
-            const usados = equipos.filter(e => e.estado === 'Usado' || e.estado === 'Nuevo').length;
+            const usados = equipos.filter(e => e.estado === 'En Uso' || e.estado === 'Disponible').length;
             
             document.getElementById('totalEquipos').textContent = total;
             document.getElementById('laptopsCount').textContent = laptops;
@@ -352,7 +359,7 @@
 
         function nuevoEquipo() {
             const emptyEquipo = {
-                estado: 'Usado',
+                estado: 'En Uso',
                 tipoEquipo: 'Laptop'
             };
             mostrarModalHistorialCompleto(emptyEquipo, [], { editMode: true, isNew: true });
@@ -515,13 +522,13 @@
             };
             const isNew = options.isNew === true;
             const editModeInitial = options.editMode === true;
-            const estadoActual = equipo.estado || 'Usado';
+            const estadoActual = equipo.estado || 'En Uso';
             const modalTitle = isNew ? 'Nuevo Equipo' : 'Información Completa del Equipo';
             const equipoLabel = equipo.numeroActivo || 'Nuevo';
             
-            const estadoBadge = estadoActual === 'Nuevo'
+            const estadoBadge = estadoActual === 'Disponible'
                 ? 'success'
-                : estadoActual === 'Usado'
+                : estadoActual === 'En Uso'
                     ? 'primary'
                     : estadoActual === 'En reparación'
                         ? 'warning'
@@ -578,10 +585,10 @@
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Estado</span>
                                                 <select class="form-select form-select-sm historial-edit-field" data-field="estado" disabled>
-                                                    <option value="Nuevo" ${equipo.estado === 'Nuevo' ? 'selected' : ''}>Nuevo</option>
-                                                    <option value="Usado" ${equipo.estado === 'Usado' ? 'selected' : ''}>Usado</option>
+                                                    <option value="Disponible" ${equipo.estado === 'Disponible' ? 'selected' : ''}>Disponible</option>
+                                                    <option value="En Uso" ${equipo.estado === 'En Uso' ? 'selected' : ''}>En Uso</option>
                                                     <option value="En reparación" ${equipo.estado === 'En reparación' ? 'selected' : ''}>En reparación</option>
-                                                    <option value="Dado de baja" ${equipo.estado === 'Dado de baja' ? 'selected' : ''}>Dado de baja</option>
+                                                    <option value="De Baja" ${equipo.estado === 'De Baja' ? 'selected' : ''}>De Baja</option>
                                                 </select>
                                             </div>
                                             <div class="historial-info-item">
@@ -635,26 +642,26 @@
                                                     <i class="fas fa-user-clock text-info"></i>
                                                     Resumen de Usuarios
                                                 </h6>
-                                                <span class="badge bg-info">${historialOrdenado.length}</span>
+                                                <span class="badge bg-info" id="historialCountBadge">${historialOrdenado.length}</span>
                                             </div>
                                             <div class="historial-section-body">
                                                 <div class="historial-info-grid">
                                                     <div class="historial-info-item">
                                                         <span class="historial-info-label">Usuario Actual</span>
-                                                        <span class="historial-info-value">${safe(usuarioActual)}</span>
+                                                        <span class="historial-info-value" id="resumenUsuarioActual">${safe(usuarioActual)}</span>
                                                     </div>
                                                     <div class="historial-info-item">
                                                         <span class="historial-info-label">Último Cambio</span>
-                                                        <span class="historial-info-value">${ultimaActualizacion}</span>
+                                                        <span class="historial-info-value" id="resumenUltimoCambio">${ultimaActualizacion}</span>
                                                     </div>
                                                 </div>
                                                 <div class="mt-3">
                                                     <span class="historial-info-label">Usuarios Anteriores</span>
-                                                    <div class="historial-item-badges mt-2">
+                                                    <div class="historial-item-badges mt-2" id="resumenUsuariosAnteriores">
                                                         ${usuariosAnteriores.length === 0 
                                                             ? '<span class="text-muted">Sin registros anteriores</span>'
                                                             : usuariosAnteriores.map(cambio => `
-                                                                <span class="badge bg-secondary">${safe(cambio.valorAnterior)}</span>
+                                                                <span class="badge bg-secondary">${safe(cambio.valorNuevo)}</span>
                                                             `).join('')
                                                         }
                                                     </div>
@@ -782,6 +789,10 @@
             const estadoBadgeEl = modalEl.querySelector('.historial-section-header .badge');
             const modalTitleEl = modalEl.querySelector('.modal-title');
             const equipoLabelEl = modalEl.querySelector('.historial-equipo-label');
+            const resumenUsuarioActualEl = modalEl.querySelector('#resumenUsuarioActual');
+            const resumenUltimoCambioEl = modalEl.querySelector('#resumenUltimoCambio');
+            const resumenUsuariosAnterioresEl = modalEl.querySelector('#resumenUsuariosAnteriores');
+            const resumenCountEl = modalEl.querySelector('#historialCountBadge');
             editableFields.forEach(field => {
                 field.dataset.original = field.value;
             });
@@ -871,6 +882,7 @@
                         throw new Error(errData.message || 'Error al guardar el equipo');
                     }
                     const actualizado = await response.json();
+                    Object.assign(equipo, actualizado);
                     const wasCreate = isCreate;
                     editableFields.forEach(field => {
                         const key = field.dataset.field;
@@ -880,9 +892,9 @@
                         }
                     });
                     if (estadoBadgeEl && actualizado.estado) {
-                        const estadoClass = actualizado.estado === 'Nuevo'
+                        const estadoClass = actualizado.estado === 'Disponible'
                             ? 'success'
-                            : actualizado.estado === 'Usado'
+                            : actualizado.estado === 'En Uso'
                                 ? 'primary'
                                 : actualizado.estado === 'En reparación'
                                     ? 'warning'
@@ -899,12 +911,49 @@
                     }
                     setEditMode(false);
                     showToast(wasCreate ? 'Equipo guardado correctamente' : 'Equipo actualizado correctamente', 'success');
+                    await refrescarResumenUsuarios();
                     cargarEquipos();
                 } catch (error) {
                     console.error('Error al actualizar:', error);
                     showToast(`Error al guardar el equipo: ${error.message}`, 'danger');
                 }
             });
+
+            async function refrescarResumenUsuarios() {
+                if (!equipo._id) return;
+                try {
+                    const response = await fetch(`/api/historial/equipo/${equipo._id}`);
+                    if (!response.ok) return;
+                    const historialActual = await response.json();
+                    const historialOrdenadoActual = [...historialActual].sort((a, b) =>
+                        new Date(b.fechaCambio) - new Date(a.fechaCambio)
+                    );
+                    const usuarioActualizado = historialOrdenadoActual.length > 0
+                        ? historialOrdenadoActual[0].valorNuevo
+                        : (equipo.usuarioAsignado || 'Sin asignar');
+                    const ultimaActualizacionActual = historialOrdenadoActual.length > 0
+                        ? new Date(historialOrdenadoActual[0].fechaCambio).toLocaleDateString()
+                        : 'Sin registros';
+                    const usuariosAnterioresActual = historialOrdenadoActual.length > 1
+                        ? historialOrdenadoActual.slice(1, 4)
+                        : [];
+
+                    if (resumenUsuarioActualEl) resumenUsuarioActualEl.textContent = usuarioActualizado;
+                    if (resumenUltimoCambioEl) resumenUltimoCambioEl.textContent = ultimaActualizacionActual;
+                    if (resumenCountEl) resumenCountEl.textContent = historialOrdenadoActual.length;
+                    if (resumenUsuariosAnterioresEl) {
+                        resumenUsuariosAnterioresEl.innerHTML = usuariosAnterioresActual.length === 0
+                            ? '<span class="text-muted">Sin registros adicionales</span>'
+                            : usuariosAnterioresActual.map(cambio => `
+                                <span class="badge bg-light text-dark">
+                                    ${escapeHtml(cambio.valorNuevo)}
+                                </span>
+                            `).join('');
+                    }
+                } catch (error) {
+                    console.error('No se pudo refrescar el historial de usuarios:', error);
+                }
+            }
 
             setEditMode(editModeInitial || isCreate);
         }

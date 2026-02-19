@@ -55,8 +55,8 @@ const equipoSchema = new mongoose.Schema({
     comentario: String,
     estado: {
         type: String,
-        enum: ['Nuevo', 'Usado', 'En reparación', 'Dado de baja'],
-        default: 'Usado'
+        enum: ['Disponible', 'En Uso', 'En reparación', 'De Baja'],
+        default: 'En Uso'
     },
     historialCambios: [{
         type: mongoose.Schema.Types.ObjectId,

@@ -20,7 +20,7 @@ const equipoSchema = z.object({
     tipoEscritorioRemoto: z.string().optional().nullable(),
     claveBIOS: z.string().optional().nullable(),
     comentario: z.string().optional().nullable(),
-    estado: z.enum(['Nuevo', 'Usado', 'En reparación', 'Dado de baja']).optional()
+    estado: z.enum(['Disponible', 'En Uso', 'En reparación', 'De Baja']).optional()
 });
 
 const equipoUpdateSchema = equipoSchema.partial();
@@ -86,8 +86,31 @@ router.put('/:id', async (req, res) => {
         const equipoActual = await Equipo.findById(req.params.id);
         if (!equipoActual) return res.status(404).json({ message: 'Equipo no encontrado' });
         
+        let historialUsuarioCreado = false;
+        // Si el estado cambia a "Disponible", archivar usuario y limpiar el campo
+        if (parsed.data.estado === 'Disponible') {
+            const usuarioActual = equipoActual.usuarioAsignado || 'No Asignado';
+            if (usuarioActual && usuarioActual !== 'No Asignado') {
+                const Historial = require('../models/Historial');
+                const historial = new Historial({
+                    equipoId: req.params.id,
+                    campoModificado: 'usuarioAsignado',
+                    valorAnterior: usuarioActual,
+                    valorNuevo: 'No Asignado',
+                    modificadoPor: 'Usuario del sistema'
+                });
+                await historial.save();
+                await Equipo.findByIdAndUpdate(
+                    req.params.id,
+                    { $push: { historialCambios: historial._id } }
+                );
+                historialUsuarioCreado = true;
+            }
+            parsed.data.usuarioAsignado = 'No Asignado';
+        }
+
         // Verificar si cambió el usuario asignado
-        if (parsed.data.usuarioAsignado && parsed.data.usuarioAsignado !== equipoActual.usuarioAsignado) {
+        if (!historialUsuarioCreado && parsed.data.usuarioAsignado && parsed.data.usuarioAsignado !== equipoActual.usuarioAsignado) {
             const Historial = require('../models/Historial');
             
             // Crear registro en historial
