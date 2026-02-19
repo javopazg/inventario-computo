@@ -624,15 +624,15 @@
                                                 <div class="historial-credenciales">
                                                     <div class="credencial-card">
                                                         <div class="credencial-label">Clave Administrador</div>
-                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" class="form-control form-control-sm credencial-value" value="${equipo.claveAdministrador || 'No configurada'}" readonly>
+                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveAdministrador" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipo.claveAdministrador || ''}" readonly>
                                                     </div>
                                                     <div class="credencial-card">
                                                         <div class="credencial-label">Clave Remota</div>
-                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" class="form-control form-control-sm credencial-value" value="${equipo.claveRemota || 'No configurada'}" readonly>
+                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveRemota" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipo.claveRemota || ''}" readonly>
                                                     </div>
                                                     <div class="credencial-card">
                                                         <div class="credencial-label">Clave BIOS</div>
-                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" class="form-control form-control-sm credencial-value" value="${equipo.claveBIOS || 'No configurada'}" readonly>
+                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveBIOS" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipo.claveBIOS || ''}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
