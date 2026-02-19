@@ -19,7 +19,10 @@ app.use(helmet({
     contentSecurityPolicy: {
         useDefaults: true,
         directives: {
-            "script-src-attr": ["'unsafe-inline'"]
+            "script-src-attr": ["'unsafe-inline'"],
+            "script-src": ["'self'", "http://ff.kis.v2.scr.kaspersky-labs.com", "https://ff.kis.v2.scr.kaspersky-labs.com"],
+            "connect-src": ["'self'", "http://ff.kis.v2.scr.kaspersky-labs.com", "https://ff.kis.v2.scr.kaspersky-labs.com"],
+            "upgrade-insecure-requests": null
         }
     }
 }));
