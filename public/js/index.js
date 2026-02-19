@@ -596,35 +596,6 @@
                                     </div>
                                 </div>
                                 
-                                <div class="historial-section">
-                                    <div class="historial-section-header">
-                                        <h6 class="historial-section-title">
-                                            <i class="fas fa-history text-secondary"></i>
-                                            Historial de Cambios
-                                        </h6>
-                                        <span class="badge bg-secondary">${historial.length}</span>
-                                    </div>
-                                    <div class="historial-section-body">
-                                        ${historial.length === 0 ? 
-                                            '<p class="text-center text-muted mb-0">No hay cambios registrados para este equipo.</p>' :
-                                            `<div class="historial-timeline">
-                                                ${historial.map(cambio => `
-                                                    <div class="historial-item">
-                                                        <div class="historial-item-header">
-                                                            <span>${new Date(cambio.fechaCambio).toLocaleString()}</span>
-                                                            <span class="text-muted">Actualizado</span>
-                                                        </div>
-                                                        <div class="historial-item-badges">
-                                                            <span class="badge bg-info">${cambio.campoModificado}</span>
-                                                            <span class="badge bg-danger">${cambio.valorAnterior}</span>
-                                                            <span class="badge bg-success">${cambio.valorNuevo}</span>
-                                                        </div>
-                                                    </div>
-                                                `).join('')}
-                                            </div>`
-                                        }
-                                    </div>
-                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-warning" onclick="editarEquipo('${equipo._id}')">
