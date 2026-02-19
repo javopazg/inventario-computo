@@ -4,6 +4,7 @@
                 console.error('Toast container or Bootstrap not available');
                 return;
             }
+            const safeMessage = escapeHtml(message ?? '');
             const toastEl = document.createElement('div');
             toastEl.className = `toast align-items-center text-bg-${type} border-0`;
             toastEl.setAttribute('role', 'alert');
@@ -11,7 +12,7 @@
             toastEl.setAttribute('aria-atomic', 'true');
             toastEl.innerHTML = `
                 <div class="d-flex">
-                    <div class="toast-body">${message}</div>
+                    <div class="toast-body">${safeMessage}</div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
                 </div>
             `;
@@ -19,6 +20,15 @@
             const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
             toast.show();
             toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\"/g, '&quot;')
+                .replace(/'/g, '&#39;');
         }
 
         // Función para confirmar eliminación
@@ -30,7 +40,7 @@
                 .then(response => response.json())
                 .then(data => {
                     showToast(data.message, 'success');
-                    location.reload();
+                    cargarEquipos();
                 })
                 .catch(error => console.error('Error:', error));
             }
@@ -100,10 +110,11 @@
             }
             
             const tbody = document.getElementById('equiposTableBody');
+            const safeBusqueda = escapeHtml(textoBusqueda);
             
             if (equiposFiltrados.length === 0) {
                 if (textoBusqueda) {
-                    tbody.innerHTML = `<tr><td colspan="11" class="text-center">No hay equipos con usuario que contenga "${textoBusqueda}"</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="11" class="text-center">No hay equipos con usuario que contenga "${safeBusqueda}"</td></tr>`;
                 } else {
                     tbody.innerHTML = '<tr><td colspan="11" class="text-center">No hay equipos con el estado seleccionado</td></tr>';
                 }
@@ -143,6 +154,7 @@
             console.log('Mostrando equipos...');
             const tbody = document.getElementById('equiposTableBody');
             tbody.innerHTML = '';
+            const safe = (value) => escapeHtml(value ?? '');
             
             // Ordenar equipos
             equipos.sort((a, b) => {
@@ -165,23 +177,23 @@
                 row.innerHTML = `
                     <td>
                         <button type="button" class="btn btn-link p-0 text-primary fw-bold" onclick="verHistorialCompleto('${equipo._id}')" title="Ver historial completo">
-                            ${equipo.numeroActivo}
+                            ${safe(equipo.numeroActivo)}
                         </button>
                     </td>
-                    <td><span class="badge bg-light text-dark">${equipo.tipoEquipo}</span></td>
-                    <td>${equipo.marca}</td>
-                    <td>${equipo.modelo}</td>
-                    <td><small>${equipo.cpu}</small></td>
-                    <td><small>${equipo.ram}</small></td>
-                    <td><small>${equipo.disco}</small></td>
+                    <td><span class="badge bg-light text-dark">${safe(equipo.tipoEquipo)}</span></td>
+                    <td>${safe(equipo.marca)}</td>
+                    <td>${safe(equipo.modelo)}</td>
+                    <td><small>${safe(equipo.cpu)}</small></td>
+                    <td><small>${safe(equipo.ram)}</small></td>
+                    <td><small>${safe(equipo.disco)}</small></td>
                     <td>
                         <button type="button" class="btn user-pill" onclick="verHistorial('${equipo._id}')" title="Ver historial de usuarios">
                             <i class="fas fa-user"></i>
-                            ${equipo.usuarioAsignado}
+                            ${safe(equipo.usuarioAsignado)}
                         </button>
                     </td>
-                    <td><small>${equipo.ubicacion}</small></td>
-                    <td><span class="badge ${estadoClass}">${equipo.estado}</span></td>
+                    <td><small>${safe(equipo.ubicacion)}</small></td>
+                    <td><span class="badge ${estadoClass}">${safe(equipo.estado)}</span></td>
                     <td>
                         <div class="btn-group btn-group-sm">
                             <button class="btn btn-outline-warning" onclick="editarEquipo('${equipo._id}')" title="Editar">
@@ -288,7 +300,7 @@
             
             const usuariosAnteriores = historialOrdenado.length > 1 ? 
                 historialOrdenado.slice(1) : [];
-            
+            const safe = (value) => escapeHtml(value ?? '');
             const modalHtml = `
                 <div class="modal fade" id="historialUsuariosModal" tabindex="-1">
                     <div class="modal-dialog modal-lg">
@@ -310,7 +322,7 @@
                                             </h6>
                                             <div class="row align-items-center">
                                                 <div class="col-md-8">
-                                                    <span class="badge bg-success fs-6 p-2">${usuarioActual}</span>
+                                                    <span class="badge bg-success fs-6 p-2">${safe(usuarioActual)}</span>
                                                 </div>
                                                 <div class="col-md-4 text-end">
                                                     <small class="text-muted">
@@ -333,7 +345,7 @@
                                                         <div class="card-body py-2">
                                                             <div class="d-flex justify-content-between align-items-center">
                                                                 <div>
-                                                                    <span class="badge bg-warning text-dark">${cambio.valorNuevo}</span>
+                                                                    <span class="badge bg-warning text-dark">${safe(cambio.valorNuevo)}</span>
                                                                     ${index === usuariosAnteriores.length - 1 ? 
                                                                         `<small class="text-muted ms-2">(Usuario original)</small>` : ''}
                                                                 </div>
@@ -397,6 +409,25 @@
             const ultimaActualizacion = historialOrdenado.length > 0 
                 ? new Date(historialOrdenado[0].fechaCambio).toLocaleDateString() 
                 : 'Sin cambios';
+            const safe = (value) => escapeHtml(value ?? '');
+            const equipoSafe = {
+                numeroActivo: safe(equipo.numeroActivo),
+                tipoEquipo: safe(equipo.tipoEquipo),
+                marca: safe(equipo.marca),
+                modelo: safe(equipo.modelo),
+                numeroSerie: safe(equipo.numeroSerie),
+                anioCompra: safe(equipo.anioCompra),
+                cpu: safe(equipo.cpu),
+                ram: safe(equipo.ram),
+                disco: safe(equipo.disco),
+                usuarioAsignado: safe(equipo.usuarioAsignado),
+                ubicacion: safe(equipo.ubicacion),
+                tipoEscritorioRemoto: safe(equipo.tipoEscritorioRemoto),
+                comentario: safe(equipo.comentario),
+                claveAdministrador: safe(equipo.claveAdministrador),
+                claveRemota: safe(equipo.claveRemota),
+                claveBIOS: safe(equipo.claveBIOS)
+            };
             const isNew = options.isNew === true;
             const editModeInitial = options.editMode === true;
             const estadoActual = equipo.estado || 'Usado';
@@ -427,15 +458,15 @@
                                     <div class="historial-section-header">
                                         <h6 class="historial-section-title">
                                             <i class="fas fa-desktop text-primary"></i>
-                                            Datos del Equipo - <span class="historial-equipo-label">${equipoLabel}</span>
+                                            Datos del Equipo - <span class="historial-equipo-label">${safe(equipoLabel)}</span>
                                         </h6>
-                                        <span class="badge bg-${estadoBadge}">${estadoActual}</span>
+                                        <span class="badge bg-${estadoBadge}">${safe(estadoActual)}</span>
                                     </div>
                                     <div class="historial-section-body">
                                         <div class="historial-info-grid mb-4">
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Número de Activo</span>
-                                                <input class="form-control form-control-sm historial-edit-field" data-field="numeroActivo" value="${equipo.numeroActivo || ''}" readonly>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="numeroActivo" value="${equipoSafe.numeroActivo}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Tipo</span>
@@ -455,43 +486,43 @@
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Marca</span>
-                                                <input class="form-control form-control-sm historial-edit-field" data-field="marca" value="${equipo.marca || ''}" readonly>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="marca" value="${equipoSafe.marca}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Modelo</span>
-                                                <input class="form-control form-control-sm historial-edit-field" data-field="modelo" value="${equipo.modelo || ''}" readonly>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="modelo" value="${equipoSafe.modelo}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Número de Serie</span>
-                                                <input class="form-control form-control-sm historial-edit-field" data-field="numeroSerie" value="${equipo.numeroSerie || ''}" readonly>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="numeroSerie" value="${equipoSafe.numeroSerie}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Año de Compra</span>
-                                                <input type="number" class="form-control form-control-sm historial-edit-field" data-field="anioCompra" value="${equipo.anioCompra || ''}" readonly>
+                                                <input type="number" class="form-control form-control-sm historial-edit-field" data-field="anioCompra" value="${equipoSafe.anioCompra}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">CPU</span>
-                                                <input class="form-control form-control-sm historial-edit-field" data-field="cpu" value="${equipo.cpu || ''}" readonly>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="cpu" value="${equipoSafe.cpu}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">RAM</span>
-                                                <input class="form-control form-control-sm historial-edit-field" data-field="ram" value="${equipo.ram || ''}" readonly>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="ram" value="${equipoSafe.ram}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Disco</span>
-                                                <input class="form-control form-control-sm historial-edit-field" data-field="disco" value="${equipo.disco || ''}" readonly>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="disco" value="${equipoSafe.disco}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Usuario Asignado</span>
-                                                <input class="form-control form-control-sm historial-edit-field" data-field="usuarioAsignado" value="${equipo.usuarioAsignado || ''}" readonly>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="usuarioAsignado" value="${equipoSafe.usuarioAsignado}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Ubicación</span>
-                                                <input class="form-control form-control-sm historial-edit-field" data-field="ubicacion" value="${equipo.ubicacion || ''}" readonly>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="ubicacion" value="${equipoSafe.ubicacion}" readonly>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Tipo Escritorio Remoto</span>
-                                                <input class="form-control form-control-sm historial-edit-field" data-field="tipoEscritorioRemoto" value="${equipo.tipoEscritorioRemoto || ''}" readonly>
+                                                <input class="form-control form-control-sm historial-edit-field" data-field="tipoEscritorioRemoto" value="${equipoSafe.tipoEscritorioRemoto}" readonly>
                                             </div>
                                         </div>
 
@@ -507,7 +538,7 @@
                                                 <div class="historial-info-grid">
                                                     <div class="historial-info-item">
                                                         <span class="historial-info-label">Usuario Actual</span>
-                                                        <span class="historial-info-value">${usuarioActual}</span>
+                                                        <span class="historial-info-value">${safe(usuarioActual)}</span>
                                                     </div>
                                                     <div class="historial-info-item">
                                                         <span class="historial-info-label">Último Cambio</span>
@@ -520,7 +551,7 @@
                                                         ${usuariosAnteriores.length === 0 
                                                             ? '<span class="text-muted">Sin registros anteriores</span>'
                                                             : usuariosAnteriores.map(cambio => `
-                                                                <span class="badge bg-secondary">${cambio.valorAnterior}</span>
+                                                                <span class="badge bg-secondary">${safe(cambio.valorAnterior)}</span>
                                                             `).join('')
                                                         }
                                                     </div>
@@ -542,15 +573,15 @@
                                                 <div class="historial-credenciales">
                                                     <div class="credencial-card">
                                                         <div class="credencial-label">Clave Administrador</div>
-                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveAdministrador" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipo.claveAdministrador || ''}" readonly>
+                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveAdministrador" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipoSafe.claveAdministrador}" readonly>
                                                     </div>
                                                     <div class="credencial-card">
                                                         <div class="credencial-label">Clave Remota</div>
-                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveRemota" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipo.claveRemota || ''}" readonly>
+                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveRemota" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipoSafe.claveRemota}" readonly>
                                                     </div>
                                                     <div class="credencial-card">
                                                         <div class="credencial-label">Clave BIOS</div>
-                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveBIOS" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipo.claveBIOS || ''}" readonly>
+                                                        <input type="${mostrarClaves ? 'text' : 'password'}" data-secret="true" data-field="claveBIOS" class="form-control form-control-sm credencial-value historial-edit-field" value="${equipoSafe.claveBIOS}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -559,7 +590,7 @@
                                         <div class="historial-info-grid">
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Comentarios</span>
-                                                <textarea class="form-control form-control-sm historial-edit-field" data-field="comentario" rows="2" readonly>${equipo.comentario || ''}</textarea>
+                                                <textarea class="form-control form-control-sm historial-edit-field" data-field="comentario" rows="2" readonly>${equipoSafe.comentario}</textarea>
                                             </div>
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Fecha de Creación</span>
