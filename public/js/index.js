@@ -251,14 +251,15 @@
                     <td><small>${equipo.cpu}</small></td>
                     <td><small>${equipo.ram}</small></td>
                     <td><small>${equipo.disco}</small></td>
-                    <td><span class="badge bg-primary">${equipo.usuarioAsignado}</span></td>
+                    <td>
+                        <button type="button" class="btn btn-link p-0 badge bg-primary" onclick="verHistorial('${equipo._id}')" title="Ver historial de usuarios">
+                            ${equipo.usuarioAsignado}
+                        </button>
+                    </td>
                     <td><small>${equipo.ubicacion}</small></td>
                     <td><span class="badge ${estadoClass}">${equipo.estado}</span></td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-primary" onclick="verHistorial('${equipo._id}')" title="Ver historial de usuarios">
-                                <i class="fas fa-users"></i>
-                            </button>
                             <button class="btn btn-outline-warning" onclick="editarEquipo('${equipo._id}')" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </button>
