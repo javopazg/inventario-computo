@@ -252,7 +252,8 @@
                     <td><small>${equipo.ram}</small></td>
                     <td><small>${equipo.disco}</small></td>
                     <td>
-                        <button type="button" class="btn btn-link p-0 badge bg-primary" onclick="verHistorial('${equipo._id}')" title="Ver historial de usuarios">
+                        <button type="button" class="btn user-pill" onclick="verHistorial('${equipo._id}')" title="Ver historial de usuarios">
+                            <i class="fas fa-user"></i>
                             ${equipo.usuarioAsignado}
                         </button>
                     </td>
