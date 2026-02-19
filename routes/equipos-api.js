@@ -1,6 +1,29 @@
 const express = require('express');
+const { z } = require('zod');
 const router = express.Router();
 const Equipo = require('../models/Equipo');
+
+const equipoSchema = z.object({
+    numeroActivo: z.string().min(1),
+    tipoEquipo: z.enum(['Laptop', 'PC']),
+    marca: z.string().min(1),
+    modelo: z.string().min(1),
+    cpu: z.string().min(1),
+    ram: z.string().min(1),
+    disco: z.string().min(1),
+    numeroSerie: z.string().min(1),
+    anioCompra: z.coerce.number().int().min(1900).max(new Date().getFullYear() + 1),
+    ubicacion: z.string().min(1),
+    usuarioAsignado: z.string().min(1),
+    claveAdministrador: z.string().optional().nullable(),
+    claveRemota: z.string().optional().nullable(),
+    tipoEscritorioRemoto: z.string().optional().nullable(),
+    claveBIOS: z.string().optional().nullable(),
+    comentario: z.string().optional().nullable(),
+    estado: z.enum(['Nuevo', 'Usado', 'En reparación', 'Dado de baja']).optional()
+});
+
+const equipoUpdateSchema = equipoSchema.partial();
 
 // GET todos los equipos
 router.get('/', async (req, res) => {
@@ -26,7 +49,11 @@ router.get('/:id', async (req, res) => {
 // POST nuevo equipo
 router.post('/', async (req, res) => {
     try {
-        const equipo = new Equipo(req.body);
+        const parsed = equipoSchema.safeParse(req.body);
+        if (!parsed.success) {
+            return res.status(400).json({ message: 'Datos inválidos', errors: parsed.error.flatten() });
+        }
+        const equipo = new Equipo(parsed.data);
         const nuevoEquipo = await equipo.save();
         if (nuevoEquipo.usuarioAsignado) {
             const Historial = require('../models/Historial');
@@ -52,11 +79,15 @@ router.post('/', async (req, res) => {
 // PUT actualizar equipo
 router.put('/:id', async (req, res) => {
     try {
+        const parsed = equipoUpdateSchema.safeParse(req.body);
+        if (!parsed.success) {
+            return res.status(400).json({ message: 'Datos inválidos', errors: parsed.error.flatten() });
+        }
         const equipoActual = await Equipo.findById(req.params.id);
         if (!equipoActual) return res.status(404).json({ message: 'Equipo no encontrado' });
         
         // Verificar si cambió el usuario asignado
-        if (req.body.usuarioAsignado && req.body.usuarioAsignado !== equipoActual.usuarioAsignado) {
+        if (parsed.data.usuarioAsignado && parsed.data.usuarioAsignado !== equipoActual.usuarioAsignado) {
             const Historial = require('../models/Historial');
             
             // Crear registro en historial
@@ -64,7 +95,7 @@ router.put('/:id', async (req, res) => {
                 equipoId: req.params.id,
                 campoModificado: 'usuarioAsignado',
                 valorAnterior: equipoActual.usuarioAsignado || 'Sin asignar',
-                valorNuevo: req.body.usuarioAsignado,
+                valorNuevo: parsed.data.usuarioAsignado,
                 modificadoPor: 'Usuario del sistema'
             });
             
@@ -79,7 +110,7 @@ router.put('/:id', async (req, res) => {
         
         const equipo = await Equipo.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            parsed.data,
             { new: true, runValidators: true }
         );
         res.json(equipo);

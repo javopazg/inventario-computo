@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
 const path = require('path');
 require('dotenv').config();
 
@@ -23,6 +24,7 @@ app.use(rateLimit({
 }));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+app.use(mongoSanitize());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
@@ -34,24 +36,8 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/inventari
 // Rutas
 app.use('/', require('./routes/index'));
 app.get('/equipos', (req, res) => res.redirect('/'));
+app.use('/equipos', require('./routes/equipos-view'));
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
-
-// Rutas de vistas para equipos
-const equiposViewRouter = express.Router();
-equiposViewRouter.get('/nuevo', (req, res) => {
-    res.render('agregar-equipo', { title: 'Agregar Nuevo Equipo', equipo: null });
-});
-equiposViewRouter.get('/editar/:id', async (req, res) => {
-    try {
-        const Equipo = require('./models/Equipo');
-        const equipo = await Equipo.findById(req.params.id);
-        if (!equipo) return res.status(404).render('error', { message: 'Equipo no encontrado' });
-        res.render('agregar-equipo', { title: 'Editar Equipo', equipo });
-    } catch (error) {
-        res.status(500).render('error', { message: error.message });
-    }
-});
-app.use('/equipos', equiposViewRouter);
 
 // Rutas API
 app.use('/api/equipos', require('./routes/equipos-api'));

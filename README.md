@@ -18,7 +18,7 @@ Aplicación web para gestionar inventario de equipos de computo utilizando Node.
    npm install
    ```
 
-4. Configurar variables de entorno en `.env`:
+4. Copiar `.env.example` a `.env` y ajustar valores:
    ```
    PORT=3000
    MONGODB_URI=mongodb://localhost:27017/inventario
