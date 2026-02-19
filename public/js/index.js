@@ -36,83 +36,6 @@
             }
         }
 
-        // Función para cargar datos en formulario (versión corregida)
-        function cargarDatosEnFormulario(id, tipo) {
-            console.log('🔄 Cargando datos para', tipo, 'con ID:', id);
-            
-            fetch(`/api/${tipo}s/${id}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('✅ Datos recibidos:', data);
-                    
-                    // ID del modal
-                    const modalId = 'editarEquipoModal';
-                    const modal = document.getElementById(modalId);
-                    
-                    if (!modal) {
-                        console.error('❌ Modal no encontrado:', modalId);
-                        return;
-                    }
-                    
-                    console.log('📝 Llenando formulario en modal:', modalId);
-                    
-                    // Mapeo de campos especiales para equipos
-                    const campoMapping = {
-                        'numeroActivo': 'numeroActivo',
-                        'tipoEquipo': 'tipoEquipo',
-                        'marca': 'marca',
-                        'modelo': 'modelo',
-                        'cpu': 'cpu',
-                        'ram': 'ram',
-                        'disco': 'disco',
-                        'numeroSerie': 'numeroSerie',
-                        'anioCompra': 'anioCompra',
-                        'ubicacion': 'ubicacion',
-                        'usuarioAsignado': 'usuarioAsignado',
-                        'claveAdministrador': 'claveAdministrador',
-                        'claveRemota': 'claveRemota',
-                        'claveBIOS': 'claveBIOS',
-                        'tipoEscritorioRemoto': 'tipoEscritorioRemoto',
-                        'comentario': 'comentario'
-                    };
-                    
-                    let camposLlenados = 0;
-                    
-                    // Llenar campos usando el mapeo
-                    Object.keys(campoMapping).forEach(dataKey => {
-                        const formFieldName = campoMapping[dataKey];
-                        const input = modal.querySelector(`[name="${formFieldName}"]`);
-                        
-                        if (input) {
-                            input.value = data[dataKey] || '';
-                            console.log(`✅ Campo "${formFieldName}" llenado con: "${data[dataKey] || ''}"`);
-                            camposLlenados++;
-                        } else {
-                            console.warn(`⚠️ Campo no encontrado en formulario: "${formFieldName}"`);
-                        }
-                    });
-                    
-                    console.log(`📊 Resumen: ${camposLlenados} campos llenados de ${Object.keys(campoMapping).length} totales`);
-                    
-                    // Verificación final
-                    setTimeout(() => {
-                        console.log('🔍 Verificación final de valores:');
-                        Object.keys(campoMapping).forEach(dataKey => {
-                            const formFieldName = campoMapping[dataKey];
-                            const input = modal.querySelector(`[name="${formFieldName}"]`);
-                            if (input) {
-                                console.log(`  ${formFieldName}: "${input.value}"`);
-                            }
-                        });
-                    }, 100);
-                    
-                })
-                .catch(error => {
-                    console.error('❌ Error al cargar datos:', error);
-                    showToast('Error al cargar los datos del formulario', 'danger');
-                });
-        }
-
         // Función para confirmar eliminación
         function confirmarEliminacion(id, tipo) {
             confirmDelete(id, tipo);
@@ -308,7 +231,7 @@
                 fetch(`/api/historial/equipo/${id}`).then(response => response.json())
             ])
             .then(([equipo, historial]) => {
-                mostrarModalHistorialCompleto(equipo, historial || []);
+                mostrarModalHistorialCompleto(equipo, historial || [], { editMode: false, isNew: false });
             })
             .catch(error => {
                 console.error('Error al cargar datos:', error);
@@ -317,35 +240,25 @@
         }
 
         function editarEquipo(id) {
-            const modalEl = document.getElementById('editarEquipoModal');
-            if (!modalEl) {
-                showToast('No se pudo abrir el formulario de edición.', 'warning');
-                return;
-            }
-            modalEl.dataset.equipoId = id;
-            const form = document.getElementById('editarEquipoForm');
-            if (form) {
-                form.reset();
-                form.classList.remove('was-validated');
-            }
-            cargarDatosEnFormulario(id, 'equipo');
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
+            Promise.all([
+                fetch(`/api/equipos/${id}`).then(response => response.json()),
+                fetch(`/api/historial/equipo/${id}`).then(response => response.json())
+            ])
+            .then(([equipo, historial]) => {
+                mostrarModalHistorialCompleto(equipo, historial || [], { editMode: true, isNew: false });
+            })
+            .catch(error => {
+                console.error('Error al cargar datos:', error);
+                showToast('Error al cargar la información del equipo', 'danger');
+            });
         }
 
         function nuevoEquipo() {
-            const modalEl = document.getElementById('nuevoEquipoModal');
-            if (!modalEl) {
-                showToast('No se pudo abrir el formulario de nuevo equipo.', 'warning');
-                return;
-            }
-            const form = document.getElementById('nuevoEquipoForm');
-            if (form) {
-                form.reset();
-                form.classList.remove('was-validated');
-            }
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
+            const emptyEquipo = {
+                estado: 'Usado',
+                tipoEquipo: 'Laptop'
+            };
+            mostrarModalHistorialCompleto(emptyEquipo, [], { editMode: true, isNew: true });
         }
 
         function eliminarEquipo(id) {
@@ -469,7 +382,7 @@
             });
         }
 
-        function mostrarModalHistorialCompleto(equipo, historial) {
+        function mostrarModalHistorialCompleto(equipo, historial, options = {}) {
             // Resetear visibilidad de claves
             mostrarClaves = false;
             const historialOrdenado = [...historial].sort((a, b) => 
@@ -484,12 +397,17 @@
             const ultimaActualizacion = historialOrdenado.length > 0 
                 ? new Date(historialOrdenado[0].fechaCambio).toLocaleDateString() 
                 : 'Sin cambios';
+            const isNew = options.isNew === true;
+            const editModeInitial = options.editMode === true;
+            const estadoActual = equipo.estado || 'Usado';
+            const modalTitle = isNew ? 'Nuevo Equipo' : 'Información Completa del Equipo';
+            const equipoLabel = equipo.numeroActivo || 'Nuevo';
             
-            const estadoBadge = equipo.estado === 'Nuevo'
+            const estadoBadge = estadoActual === 'Nuevo'
                 ? 'success'
-                : equipo.estado === 'Usado'
+                : estadoActual === 'Usado'
                     ? 'primary'
-                    : equipo.estado === 'En reparación'
+                    : estadoActual === 'En reparación'
                         ? 'warning'
                         : 'danger';
 
@@ -500,7 +418,7 @@
                             <div class="modal-header">
                                 <h5 class="modal-title">
                                     <i class="fas fa-info-circle"></i>
-                                    Información Completa del Equipo
+                                    ${modalTitle}
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
@@ -509,9 +427,9 @@
                                     <div class="historial-section-header">
                                         <h6 class="historial-section-title">
                                             <i class="fas fa-desktop text-primary"></i>
-                                            Datos del Equipo - ${equipo.numeroActivo}
+                                            Datos del Equipo - <span class="historial-equipo-label">${equipoLabel}</span>
                                         </h6>
-                                        <span class="badge bg-${estadoBadge}">${equipo.estado}</span>
+                                        <span class="badge bg-${estadoBadge}">${estadoActual}</span>
                                     </div>
                                     <div class="historial-section-body">
                                         <div class="historial-info-grid mb-4">
@@ -657,13 +575,13 @@
                                 
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-warning" id="btnEditarEnModal">
+                                <button type="button" class="btn btn-warning ${isNew ? 'd-none' : ''}" id="btnEditarEnModal">
                                     <i class="fas fa-edit"></i> Editar Equipo
                                 </button>
-                                <button type="button" class="btn btn-primary d-none" id="btnGuardarEnModal">
-                                    <i class="fas fa-save"></i> Guardar
+                                <button type="button" class="btn btn-primary ${isNew || editModeInitial ? '' : 'd-none'}" id="btnGuardarEnModal">
+                                    <i class="fas fa-save"></i> ${isNew ? 'Guardar equipo' : 'Guardar'}
                                 </button>
-                                <button type="button" class="btn btn-outline-secondary d-none" id="btnCancelarEnModal">
+                                <button type="button" class="btn btn-outline-secondary ${isNew || editModeInitial ? '' : 'd-none'}" id="btnCancelarEnModal">
                                     Cancelar
                                 </button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -683,6 +601,8 @@
 
             const editableFields = modalEl.querySelectorAll('.historial-edit-field');
             const estadoBadgeEl = modalEl.querySelector('.historial-section-header .badge');
+            const modalTitleEl = modalEl.querySelector('.modal-title');
+            const equipoLabelEl = modalEl.querySelector('.historial-equipo-label');
             editableFields.forEach(field => {
                 field.dataset.original = field.value;
             });
@@ -690,6 +610,7 @@
             const btnEditar = modalEl.querySelector('#btnEditarEnModal');
             const btnGuardar = modalEl.querySelector('#btnGuardarEnModal');
             const btnCancelar = modalEl.querySelector('#btnCancelarEnModal');
+            let isCreate = isNew;
 
             const setEditMode = (enabled) => {
                 editableFields.forEach(field => {
@@ -701,9 +622,15 @@
                         field.readOnly = !enabled;
                     }
                 });
-                btnEditar.classList.toggle('d-none', enabled);
-                btnGuardar.classList.toggle('d-none', !enabled);
-                btnCancelar.classList.toggle('d-none', !enabled);
+                if (isCreate) {
+                    btnEditar.classList.add('d-none');
+                    btnGuardar.classList.toggle('d-none', !enabled);
+                    btnCancelar.classList.toggle('d-none', !enabled);
+                } else {
+                    btnEditar.classList.toggle('d-none', enabled);
+                    btnGuardar.classList.toggle('d-none', !enabled);
+                    btnCancelar.classList.toggle('d-none', !enabled);
+                }
             };
 
             btnEditar.addEventListener('click', () => setEditMode(true));
@@ -711,31 +638,61 @@
                 editableFields.forEach(field => {
                     field.value = field.dataset.original || '';
                 });
-                setEditMode(false);
+                if (isCreate) {
+                    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) modalInstance.hide();
+                } else {
+                    setEditMode(false);
+                }
             });
 
             btnGuardar.addEventListener('click', async () => {
                 const payload = {};
+                const requiredFields = [
+                    'numeroActivo',
+                    'tipoEquipo',
+                    'marca',
+                    'modelo',
+                    'cpu',
+                    'ram',
+                    'disco',
+                    'numeroSerie',
+                    'anioCompra',
+                    'ubicacion',
+                    'usuarioAsignado'
+                ];
+                const missing = [];
                 editableFields.forEach(field => {
                     const key = field.dataset.field;
                     if (!key) return;
                     const value = field.value;
-                    if (value !== null && value !== undefined) {
-                        payload[key] = key === 'anioCompra' ? parseInt(value, 10) : String(value).trim();
+                    const trimmed = value !== null && value !== undefined ? String(value).trim() : '';
+                    if (requiredFields.includes(key) && !trimmed) {
+                        missing.push(key);
+                    }
+                    if (trimmed !== '') {
+                        payload[key] = key === 'anioCompra' ? parseInt(trimmed, 10) : trimmed;
                     }
                 });
+                if (missing.length > 0) {
+                    showToast('Completa los campos obligatorios antes de guardar.', 'warning');
+                    return;
+                }
 
                 try {
-                    const response = await fetch(`/api/equipos/${equipo._id}`, {
-                        method: 'PUT',
+                    const endpoint = isCreate ? '/api/equipos' : `/api/equipos/${equipo._id}`;
+                    const method = isCreate ? 'POST' : 'PUT';
+                    const response = await fetch(endpoint, {
+                        method,
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
                     if (!response.ok) {
                         const errData = await response.json();
-                        throw new Error(errData.message || 'Error al actualizar el equipo');
+                        throw new Error(errData.message || 'Error al guardar el equipo');
                     }
                     const actualizado = await response.json();
+                    const wasCreate = isCreate;
                     editableFields.forEach(field => {
                         const key = field.dataset.field;
                         if (key && actualizado[key] !== undefined) {
@@ -754,109 +711,27 @@
                         estadoBadgeEl.className = `badge bg-${estadoClass}`;
                         estadoBadgeEl.textContent = actualizado.estado;
                     }
+                    if (isCreate) {
+                        equipo._id = actualizado._id;
+                        isCreate = false;
+                        if (modalTitleEl) modalTitleEl.innerHTML = `<i class="fas fa-info-circle"></i> Información Completa del Equipo`;
+                        if (equipoLabelEl) equipoLabelEl.textContent = actualizado.numeroActivo || 'Equipo';
+                        btnGuardar.innerHTML = '<i class="fas fa-save"></i> Guardar';
+                    }
                     setEditMode(false);
-                    showToast('Equipo actualizado correctamente', 'success');
+                    showToast(wasCreate ? 'Equipo guardado correctamente' : 'Equipo actualizado correctamente', 'success');
                     cargarEquipos();
                 } catch (error) {
                     console.error('Error al actualizar:', error);
-                    showToast(`Error al actualizar el equipo: ${error.message}`, 'danger');
+                    showToast(`Error al guardar el equipo: ${error.message}`, 'danger');
                 }
             });
+
+            setEditMode(editModeInitial || isCreate);
         }
 
         // Iniciar carga
         document.addEventListener('DOMContentLoaded', function() {
-            const nuevoForm = document.getElementById('nuevoEquipoForm');
-            if (nuevoForm) {
-                nuevoForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    if (!nuevoForm.checkValidity()) {
-                        nuevoForm.classList.add('was-validated');
-                        return;
-                    }
-
-                    const formData = new FormData(nuevoForm);
-                    const payload = {};
-                    for (const [key, value] of formData.entries()) {
-                        if (value !== null && value !== undefined && String(value).trim() !== '') {
-                            payload[key] = key === 'anioCompra' ? parseInt(value, 10) : String(value).trim();
-                        }
-                    }
-
-                    try {
-                        const response = await fetch('/api/equipos', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-
-                        if (!response.ok) {
-                            const errorData = await response.json();
-                            throw new Error(errorData.message || 'Error al crear el equipo');
-                        }
-
-                        const modalEl = document.getElementById('nuevoEquipoModal');
-                        const modal = modalEl ? bootstrap.Modal.getInstance(modalEl) : null;
-                        if (modal) modal.hide();
-                        await cargarEquipos();
-                        showToast('Equipo agregado correctamente', 'success');
-                    } catch (error) {
-                        console.error('Error al crear:', error);
-                        showToast(`Error al crear el equipo: ${error.message}`, 'danger');
-                    }
-                });
-            }
-
-            const editarForm = document.getElementById('editarEquipoForm');
-            if (editarForm) {
-                editarForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    if (!editarForm.checkValidity()) {
-                        editarForm.classList.add('was-validated');
-                        return;
-                    }
-
-                    const modalEl = document.getElementById('editarEquipoModal');
-                    const equipoId = modalEl ? modalEl.dataset.equipoId : null;
-                    if (!equipoId) {
-                        showToast('No se encontró el ID del equipo para editar.', 'warning');
-                        return;
-                    }
-
-                    const formData = new FormData(editarForm);
-                    const payload = {};
-                    for (const [key, value] of formData.entries()) {
-                        if (value !== null && value !== undefined && String(value).trim() !== '') {
-                            payload[key] = key === 'anioCompra' ? parseInt(value, 10) : String(value).trim();
-                        }
-                    }
-
-                    try {
-                        const response = await fetch(`/api/equipos/${equipoId}`, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-
-                        if (!response.ok) {
-                            const errorData = await response.json();
-                            throw new Error(errorData.message || 'Error al actualizar el equipo');
-                        }
-
-                        const modal = bootstrap.Modal.getInstance(modalEl);
-                        if (modal) modal.hide();
-                        await cargarEquipos();
-                        showToast('Equipo actualizado correctamente', 'success');
-                    } catch (error) {
-                        console.error('Error al actualizar:', error);
-                        showToast(`Error al actualizar el equipo: ${error.message}`, 'danger');
-                    }
-                });
-            }
             cargarEquipos();
         });
     
