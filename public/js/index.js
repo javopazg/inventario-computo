@@ -303,15 +303,17 @@
         }
 
         function verHistorialCompleto(id) {
-            fetch(`/api/equipos/${id}`)
-                .then(response => response.json())
-                .then(equipo => {
-                    mostrarModalHistorialCompleto(equipo, []);
-                })
-                .catch(error => {
-                    console.error('Error al cargar datos:', error);
-                    showToast('Error al cargar la información del equipo', 'danger');
-                });
+            Promise.all([
+                fetch(`/api/equipos/${id}`).then(response => response.json()),
+                fetch(`/api/historial/equipo/${id}`).then(response => response.json())
+            ])
+            .then(([equipo, historial]) => {
+                mostrarModalHistorialCompleto(equipo, historial || []);
+            })
+            .catch(error => {
+                console.error('Error al cargar datos:', error);
+                showToast('Error al cargar la información del equipo', 'danger');
+            });
         }
 
         function editarEquipo(id) {
@@ -470,6 +472,18 @@
         function mostrarModalHistorialCompleto(equipo, historial) {
             // Resetear visibilidad de claves
             mostrarClaves = false;
+            const historialOrdenado = [...historial].sort((a, b) => 
+                new Date(b.fechaCambio) - new Date(a.fechaCambio)
+            );
+            const usuarioActual = historialOrdenado.length > 0 
+                ? historialOrdenado[0].valorNuevo 
+                : (equipo.usuarioAsignado || 'Sin asignar');
+            const usuariosAnteriores = historialOrdenado.length > 1 
+                ? historialOrdenado.slice(1, 4) 
+                : [];
+            const ultimaActualizacion = historialOrdenado.length > 0 
+                ? new Date(historialOrdenado[0].fechaCambio).toLocaleDateString() 
+                : 'Sin cambios';
             
             const estadoBadge = equipo.estado === 'Nuevo'
                 ? 'success'
@@ -513,6 +527,15 @@
                                                 </select>
                                             </div>
                                             <div class="historial-info-item">
+                                                <span class="historial-info-label">Estado</span>
+                                                <select class="form-select form-select-sm historial-edit-field" data-field="estado" disabled>
+                                                    <option value="Nuevo" ${equipo.estado === 'Nuevo' ? 'selected' : ''}>Nuevo</option>
+                                                    <option value="Usado" ${equipo.estado === 'Usado' ? 'selected' : ''}>Usado</option>
+                                                    <option value="En reparación" ${equipo.estado === 'En reparación' ? 'selected' : ''}>En reparación</option>
+                                                    <option value="Dado de baja" ${equipo.estado === 'Dado de baja' ? 'selected' : ''}>Dado de baja</option>
+                                                </select>
+                                            </div>
+                                            <div class="historial-info-item">
                                                 <span class="historial-info-label">Marca</span>
                                                 <input class="form-control form-control-sm historial-edit-field" data-field="marca" value="${equipo.marca || ''}" readonly>
                                             </div>
@@ -551,6 +574,39 @@
                                             <div class="historial-info-item">
                                                 <span class="historial-info-label">Tipo Escritorio Remoto</span>
                                                 <input class="form-control form-control-sm historial-edit-field" data-field="tipoEscritorioRemoto" value="${equipo.tipoEscritorioRemoto || ''}" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="historial-section mb-4">
+                                            <div class="historial-section-header">
+                                                <h6 class="historial-section-title">
+                                                    <i class="fas fa-user-clock text-info"></i>
+                                                    Resumen de Usuarios
+                                                </h6>
+                                                <span class="badge bg-info">${historialOrdenado.length}</span>
+                                            </div>
+                                            <div class="historial-section-body">
+                                                <div class="historial-info-grid">
+                                                    <div class="historial-info-item">
+                                                        <span class="historial-info-label">Usuario Actual</span>
+                                                        <span class="historial-info-value">${usuarioActual}</span>
+                                                    </div>
+                                                    <div class="historial-info-item">
+                                                        <span class="historial-info-label">Último Cambio</span>
+                                                        <span class="historial-info-value">${ultimaActualizacion}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <span class="historial-info-label">Usuarios Anteriores</span>
+                                                    <div class="historial-item-badges mt-2">
+                                                        ${usuariosAnteriores.length === 0 
+                                                            ? '<span class="text-muted">Sin registros anteriores</span>'
+                                                            : usuariosAnteriores.map(cambio => `
+                                                                <span class="badge bg-secondary">${cambio.valorAnterior}</span>
+                                                            `).join('')
+                                                        }
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -626,6 +682,7 @@
             modal.show();
 
             const editableFields = modalEl.querySelectorAll('.historial-edit-field');
+            const estadoBadgeEl = modalEl.querySelector('.historial-section-header .badge');
             editableFields.forEach(field => {
                 field.dataset.original = field.value;
             });
@@ -686,6 +743,17 @@
                             field.dataset.original = field.value;
                         }
                     });
+                    if (estadoBadgeEl && actualizado.estado) {
+                        const estadoClass = actualizado.estado === 'Nuevo'
+                            ? 'success'
+                            : actualizado.estado === 'Usado'
+                                ? 'primary'
+                                : actualizado.estado === 'En reparación'
+                                    ? 'warning'
+                                    : 'danger';
+                        estadoBadgeEl.className = `badge bg-${estadoClass}`;
+                        estadoBadgeEl.textContent = actualizado.estado;
+                    }
                     setEditMode(false);
                     showToast('Equipo actualizado correctamente', 'success');
                     cargarEquipos();
